@@ -133,6 +133,10 @@ body {
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
 }
+.kv.c-cyan   { color: #22d3ee; text-shadow: 0 0 18px rgba(34,211,238,.55); }
+.kv.c-red    { color: #ef4444; text-shadow: 0 0 18px rgba(239,68,68,.55); }
+.kv.c-orange { color: #f97316; text-shadow: 0 0 18px rgba(249,115,22,.55); }
+.kv.c-muted  { color: #64748b; }
 .kl {
   font-size: .68rem;
   color: var(--muted);
@@ -399,13 +403,13 @@ tr:hover td { background: rgba(255,255,255,.02); }
 
 <!-- KPI Row -->
 <div class="kpis">
-  <div class="kpi" style="color:#22d3ee"><div class="kv" style="color:#22d3ee">48,374</div><div class="kl">Total Units</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">71.2%</div><div class="kl">Capacity (Target 65%)</div><div class="ksub">4,712 units to clear</div></div>
-  <div class="kpi" style="color:#64748b"><div class="kv" style="color:#64748b">67,920</div><div class="kl">Total Slots</div></div>
-  <div class="kpi" style="color:#f97316"><div class="kv" style="color:#f97316">127d</div><div class="kl">Avg Days in Storage</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">6,481</div><div class="kl">Items 365+ Days</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">7,903</div><div class="kl">Repair &gt;90d</div><div class="ksub">Action needed</div></div>
-  <div class="kpi" style="color:#f97316"><div class="kv" style="color:#f97316">412</div><div class="kl">RT / IQ Concession</div><div class="ksub">397 units &gt;90d (96%)</div></div>
+  <div class="kpi" style="color:#22d3ee"><div class="kv c-cyan">48,374</div><div class="kl">Total Units</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">71.2%</div><div class="kl">Capacity (Target 65%)</div><div class="ksub">4,712 units to clear</div></div>
+  <div class="kpi" style="color:#64748b"><div class="kv c-muted">67,920</div><div class="kl">Total Slots</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv c-orange">127d</div><div class="kl">Avg Days in Storage</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">6,481</div><div class="kl">Items 365+ Days</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">7,903</div><div class="kl">Repair &gt;90d</div><div class="ksub">Action needed</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv c-orange">412</div><div class="kl">RT / IQ Concession</div><div class="ksub">397 units &gt;90d (96%)</div></div>
 </div>
 
 <!-- Main content -->
@@ -448,7 +452,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <div class="card" style="margin-bottom:16px;">
     <div class="chead"><span class="ctitle">Disposition Category &times; Age Range</span></div>
     <div class="cnote"><b>Age buckets:</b> &lt;30d, 30-90d, 91-180d, 181-365d, 365d+. Each bar shows unit count per disposition group.</div>
-    <canvas id="dispositionAge" height="90"></canvas>
+    <div style="position:relative;height:260px;"><canvas id="dispositionAge"></canvas></div>
   </div>
 
   <!-- Top SKUs bar -->
@@ -457,7 +461,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
       <span class="ctitle">Top 15 SKUs &mdash; All Inventory (48,374 units)</span>
       <span class="ctag" style="background:#22d3ee22;color:#22d3ee;border:1px solid #22d3ee44;">All Disp.</span>
     </div>
-    <canvas id="topSkusBar" height="80"></canvas>
+    <div style="position:relative;height:340px;"><canvas id="topSkusBar"></canvas></div>
   </div>
 
   <!-- ── Per-Category Deep Dive ── -->
@@ -476,42 +480,42 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <div class="tab-panel active" id="tab-repair">
     <div class="card">
       <div class="chead"><span class="ctitle">Repair Disposition &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="repairBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="repairBar"></canvas></div>
     </div>
   </div>
 
   <div class="tab-panel" id="tab-clnr">
     <div class="card">
       <div class="chead"><span class="ctitle">CLNR (Sellable) &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="clnrBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="clnrBar"></canvas></div>
     </div>
   </div>
 
   <div class="tab-panel" id="tab-fwd">
     <div class="card">
       <div class="chead"><span class="ctitle">Forward Undeliverable &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="fwdBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="fwdBar"></canvas></div>
     </div>
   </div>
 
   <div class="tab-panel" id="tab-new">
     <div class="card">
       <div class="chead"><span class="ctitle">New &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="newBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="newBar"></canvas></div>
     </div>
   </div>
 
   <div class="tab-panel" id="tab-bidsale">
     <div class="card">
       <div class="chead"><span class="ctitle">Bid Sale ABC &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="bidsaleBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="bidsaleBar"></canvas></div>
     </div>
   </div>
 
   <div class="tab-panel" id="tab-shred">
     <div class="card">
       <div class="chead"><span class="ctitle">Shred &mdash; Top 15 SKUs by Age</span></div>
-      <canvas id="shredBar" height="80"></canvas>
+      <div style="position:relative;height:320px;"><canvas id="shredBar"></canvas></div>
     </div>
   </div>
 
@@ -521,7 +525,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <div class="grid2">
     <div class="card">
       <div class="chead"><span class="ctitle">Internet Devices &mdash; 6,840 units total</span></div>
-      <canvas id="internetBar" height="100"></canvas>
+      <div style="position:relative;height:260px;"><canvas id="internetBar"></canvas></div>
     </div>
     <div class="card">
       <div class="chead"><span class="ctitle">Top Locations &mdash; Internet Devices</span></div>
@@ -535,7 +539,7 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <div class="grid2">
     <div class="card">
       <div class="chead"><span class="ctitle">Tablets &mdash; 29,814 units total</span></div>
-      <canvas id="tabletsBar" height="100"></canvas>
+      <div style="position:relative;height:280px;"><canvas id="tabletsBar"></canvas></div>
     </div>
     <div class="card">
       <div class="chead"><span class="ctitle">Top Locations &mdash; Tablets</span></div>
@@ -549,11 +553,11 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <div class="grid2">
     <div class="card">
       <div class="chead"><span class="ctitle">RT / IQ Concession Devices &mdash; 412 units total</span></div>
-      <canvas id="concessionBar" height="120"></canvas>
+      <div style="position:relative;height:220px;"><canvas id="concessionBar"></canvas></div>
     </div>
     <div class="card">
       <div class="chead"><span class="ctitle">Items 365+ Days &mdash; by Disposition (6,481 units)</span></div>
-      <canvas id="aging365Donut"></canvas>
+      <div style="position:relative;height:260px;"><canvas id="aging365Donut"></canvas></div>
     </div>
   </div>
 
