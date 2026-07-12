@@ -3,252 +3,1012 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Accessory RTV & Bid Sale — Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Accessory Return-to-Vendor &amp; Bid Sale Storage Location Dashboard — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  --bg:#07080f;--card:#0d0f1a;--border:rgba(255,255,255,.06);
-  --accent:#06b6d4;--cyan-d:rgba(6,182,212,.12);
-  --text:#e2e8f0;--muted:#64748b;
-  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
+  --bg:#07080f; --bg2:#0d0f1a; --bg3:#111420;
+  --card:rgba(255,255,255,0.028); --border:rgba(255,255,255,0.07);
+  --border-hi:rgba(6,182,212,0.35);
+  --cyan:#06b6d4; --cyan-d:rgba(6,182,212,0.15);
+  --purple:#8b5cf6; --purple-d:rgba(139,92,246,0.15);
+  --green:#10b981; --green-d:rgba(16,185,129,0.15);
+  --amber:#f59e0b; --amber-d:rgba(245,158,11,0.15);
+  --red:#ef4444;   --red-d:rgba(239,68,68,0.15);
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#475569;
+  --r:12px; --rs:8px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--card)} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.demo-banner{background:rgba(139,92,246,.08);border-bottom:1px solid rgba(139,92,246,.2);
-  padding:.55rem 2rem;text-align:center;font-size:.72rem;color:#a78bfa;
-  display:flex;align-items:center;justify-content:center;gap:.5rem}
-.demo-banner a{color:rgba(167,139,250,.8);text-decoration:none;font-weight:600}
+/* DEMO BANNER */
+.demo-banner{
+  background:linear-gradient(90deg,rgba(139,92,246,0.18) 0%,rgba(109,40,217,0.22) 100%);
+  border-bottom:1px solid rgba(139,92,246,0.35);
+  padding:9px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:500;color:#c4b5fd;
+  letter-spacing:.2px;
+}
+.demo-banner a{color:#a78bfa;text-decoration:none;font-weight:600;border-bottom:1px solid rgba(167,139,250,.4);transition:color .15s,border-color .15s}
+.demo-banner a:hover{color:#c4b5fd;border-color:#c4b5fd}
 
-header{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.9);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);padding:0 2rem;height:56px;
-  display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;
-  background:linear-gradient(135deg,#e2e8f0,var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hright{display:flex;gap:.75rem;align-items:center}
-.hbadge{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);padding:.25rem .75rem;border-radius:20px;border:1px solid var(--border)}
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(7,8,15,0.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;
+  background:linear-gradient(135deg,#e2e8f0 0%,var(--cyan) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px}
+.hbadge{font-size:11px;font-weight:500;letter-spacing:.7px;color:var(--text3);
+  text-transform:uppercase;padding:3px 10px;border-radius:20px;
+  border:1px solid var(--border);background:var(--card)}
+.hright{display:flex;align-items:center;gap:12px}
+.date-badge{font-size:12px;font-weight:600;color:var(--text2);
+  padding:4px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card)}
+.live{width:7px;height:7px;border-radius:50%;background:var(--purple);
+  box-shadow:0 0 8px var(--purple),0 0 16px rgba(139,92,246,.4);
+  animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.live-badge{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
-  padding:.25rem .75rem;border-radius:20px;display:flex;align-items:center;gap:.4rem}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
 
-.tabs{display:flex;gap:.25rem;padding:.75rem 2rem;border-bottom:1px solid var(--border);
-  background:rgba(7,8,15,.6);overflow-x:auto}
-.tab{font-size:.8rem;font-weight:600;padding:.4rem 1rem;border-radius:8px;cursor:pointer;
-  color:var(--muted);border:1px solid transparent;transition:all .2s;white-space:nowrap}
-.tab.active{color:var(--accent);background:var(--cyan-d);border-color:rgba(6,182,212,.25)}
-.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.04)}
+/* TAB BAR */
+.tab-bar{
+  display:flex;align-items:center;gap:4px;
+  padding:12px 32px 0;border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.tab-btn{
+  padding:9px 22px;font-size:13px;font-weight:600;
+  border:none;background:none;cursor:pointer;
+  color:var(--text3);border-bottom:2px solid transparent;
+  transition:all .2s;letter-spacing:.2px;
+  font-family:'Inter',sans-serif;
+}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-badge{
+  display:inline-block;font-size:10px;font-weight:600;
+  padding:1px 7px;border-radius:10px;margin-left:7px;
+  background:var(--cyan-d);color:var(--cyan);
+}
+.tab-badge.purple{background:var(--purple-d);color:var(--purple)}
 
-main{max-width:1100px;margin:0 auto;padding:2rem}
+/* MAIN */
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+main{max-width:1600px;margin:0 auto;padding:28px 32px 56px;display:flex;flex-direction:column;gap:22px}
 
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(6,182,212,.05),transparent 60%)}
-.kpi-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.kpi-val{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;line-height:1}
-.kpi-val.cyan{color:var(--accent)} .kpi-val.green{color:var(--green)} .kpi-val.amber{color:var(--amber)} .kpi-val.purple{color:var(--purple)}
-.kpi-sub{font-size:.7rem;color:var(--muted);margin-top:.35rem}
+/* SECTION LABEL */
+.slabel{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
 
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
-@media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
-.chart-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:1rem}
-.chart-wrap{position:relative;height:220px}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;
+  transition:border-color .2s,box-shadow .2s}
+.card:hover{border-color:var(--border-hi);box-shadow:0 0 28px rgba(6,182,212,.05)}
 
-.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:2rem}
-.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.table-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700}
-.table-count{font-size:.7rem;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:.78rem}
-th{text-align:left;padding:.5rem .75rem;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
-td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.03)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-.pill{display:inline-block;font-size:.62rem;font-weight:700;padding:.18rem .5rem;border-radius:8px}
-.pill-rtv{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.pill-bid{background:rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.2)}
-.pill-green{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
-.pill-amber{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px 22px 18px;display:flex;flex-direction:column;gap:4px;
+  transition:border-color .2s,transform .2s,box-shadow .2s;cursor:default}
+.kpi-card:hover{transform:translateY(-2px);border-color:var(--border-hi);box-shadow:0 8px 32px rgba(6,182,212,.07)}
+.kpi-label{font-size:10.5px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--text3)}
+.kpi-val{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;line-height:1;letter-spacing:-1px;margin-top:4px}
+.kpi-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.delta-row{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.delta-chip{font-size:10px;padding:2px 9px;border-radius:20px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.delta-chip .dc-lbl{color:var(--text3);font-size:9px;font-weight:500;letter-spacing:.4px}
+.delta-chip .dc-val{font-weight:700;font-size:10.5px}
 
-footer{text-align:center;padding:2rem;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border)}
-footer a{color:var(--accent);text-decoration:none}
+.cyan{color:var(--cyan);text-shadow:0 0 20px rgba(6,182,212,.5)}
+.amber{color:var(--amber);text-shadow:0 0 20px rgba(245,158,11,.5)}
+.purple{color:var(--purple);text-shadow:0 0 20px rgba(139,92,246,.5)}
+.red{color:var(--red);text-shadow:0 0 20px rgba(239,68,68,.5)}
+.green-c{color:var(--green);text-shadow:0 0 20px rgba(16,185,129,.5)}
+
+/* 2-COL ROWS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+
+/* MID ROW */
+.mid-row{display:grid;grid-template-columns:320px 1fr;gap:14px;align-items:start}
+.mid-left{display:flex;flex-direction:column;gap:14px}
+
+/* DONUT */
+.donut-wrap{position:relative;width:170px;height:170px;margin:0 auto}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.donut-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+.donut-lbl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
+.dlegend{display:flex;flex-direction:column;gap:9px;margin-top:16px}
+.dleg-item{display:flex;align-items:center;gap:9px;font-size:12px}
+.dleg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.dleg-lbl{color:var(--text2);flex:1}
+.dleg-val{font-weight:600}
+
+/* PB BREAKDOWN */
+.pb-list{display:flex;flex-direction:column;gap:9px}
+.pb-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.pb-name{color:var(--text2);min-width:160px;white-space:nowrap}
+.pb-bar-bg{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.pb-bar{height:100%;border-radius:2px;background:var(--purple)}
+.pb-qty{font-weight:600;min-width:52px;text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{border-bottom:1px solid var(--border)}
+thead th{padding:9px 13px;text-align:left;font-size:10px;font-weight:600;
+  letter-spacing:.9px;text-transform:uppercase;color:var(--text3);white-space:nowrap;
+  cursor:pointer;user-select:none;transition:color .15s}
+thead th:hover{color:var(--text2)}
+thead th.sort-asc::after{content:" ↑";color:var(--cyan)}
+thead th.sort-desc::after{content:" ↓";color:var(--cyan)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody td{padding:9px 13px;color:var(--text2);white-space:nowrap;vertical-align:middle}
+.td-b{font-weight:600;color:var(--text)}
+.td-mono{font-family:'SF Mono','Fira Code',monospace;font-size:11.5px;color:var(--cyan)}
+
+.copy-btn{background:none;border:1px solid var(--border);color:var(--text3);
+  padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;
+  font-family:inherit;transition:all .15s}
+.copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.copy-btn.ok{border-color:var(--green);color:var(--green)}
+
+.achip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.a-crit{background:var(--red-d);color:var(--red)}
+.a-high{background:var(--amber-d);color:var(--amber)}
+.a-med{background:rgba(234,179,8,.12);color:#d97706}
+.a-ok{background:var(--green-d);color:var(--green)}
+
+.rank{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;font-size:11px;font-weight:700;
+  background:var(--border);color:var(--text3)}
+.r1{background:rgba(245,158,11,.2);color:var(--amber)}
+.r2{background:rgba(148,163,184,.15);color:#94a3b8}
+.r3{background:rgba(180,100,60,.15);color:#cd7f32}
+
+/* STACKED BAR LEGEND */
+.stack-legend{display:flex;gap:18px;margin-bottom:12px;flex-wrap:wrap}
+.sleg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text2)}
+.sleg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* Facility B KPI grid */
+.wh72-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* FOOTER */
+footer{text-align:center;padding:22px;font-size:11px;color:var(--text3);border-top:1px solid var(--border)}
+footer a{color:var(--text3);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.1);transition:color .15s}
+footer a:hover{color:var(--text2)}
+
+@media(max-width:1200px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .mid-row{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  main{padding:14px}
+  .kpi-grid{grid-template-columns:1fr}
+  .wh72-kpi{grid-template-columns:1fr}
+  .tab-bar{padding:10px 14px 0}
+  .demo-banner{padding:9px 14px;font-size:11px;flex-direction:column;gap:6px;align-items:flex-start}
+}
+@keyframes _fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card,.kpi-card{animation:_fadeUp .4s ease both}
 </style>
 </head>
 <body>
 
+<!-- DEMO BANNER -->
 <div class="demo-banner">
-  ⬡ Demo Mode — All data is fictional and for portfolio showcase only &nbsp;·&nbsp;
-  <a href="../../index.html">← Back to Hub</a>
+  <span>&#11042; Demo Mode &mdash; All data is fictional &nbsp;&middot;&nbsp; No real inventory, warehouse, or vendor information is shown</span>
+  <a href="../../index.html">&#8592; Back to Hub</a>
 </div>
 
+<!-- HEADER -->
 <header>
-  <div class="logo">Accessory RTV & Bid Sale</div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <span class="logo">Verizon Ops &nbsp;·&nbsp; Accessory RTV</span>
+    <span class="hbadge">Demo &nbsp;|&nbsp; Portfolio</span>
+  </div>
   <div class="hright">
-    <div class="live-badge"><div class="live-dot"></div>Daily Pipeline</div>
-    <div class="hbadge">Verizon Ops · Demo</div>
+    <div class="live"></div>
+    <span class="date-badge">2026-07-11</span>
   </div>
 </header>
 
-<div class="tabs">
-  <div class="tab active">Overview</div>
-  <div class="tab">RTV Detail</div>
-  <div class="tab">Bid Sale</div>
-  <div class="tab">OEM Breakdown</div>
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('wh41',this)">
+    Facility A &mdash; Accessory RTV
+    <span class="tab-badge" id="tab-badge-41">&#8212;</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('wh72',this)">
+    Facility B &mdash; Bid Sale
+    <span class="tab-badge purple" id="tab-badge-72">&#8212;</span>
+  </button>
 </div>
 
+<!-- ═══════════════════ FACILITY A TAB ═══════════════════ -->
+<div id="pane-wh41" class="tab-pane active">
 <main>
 
-  <div class="kpi-row">
-    <div class="kpi">
-      <div class="kpi-label">Total Units (MTD)</div>
-      <div class="kpi-val cyan">3,847</div>
-      <div class="kpi-sub">Month to date</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">RTV Units</div>
-      <div class="kpi-val amber">2,104</div>
-      <div class="kpi-sub">Return to vendor</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Bid Sale Units</div>
-      <div class="kpi-val purple">1,743</div>
-      <div class="kpi-sub">Channeled to bid sale</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Processed Today</div>
-      <div class="kpi-val green">142</div>
-      <div class="kpi-sub">Jul 11 intake</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">OEM Count</div>
-      <div class="kpi-val cyan">6</div>
-      <div class="kpi-sub">Active OEMs</div>
+  <!-- KPI -->
+  <div>
+    <div class="slabel">Facility A Snapshot &mdash; Accessory RTV Staging</div>
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-label">Total Units</div>
+        <div class="kpi-val cyan" id="k41-qty">&#8212;</div>
+        <div class="kpi-sub" id="k41-sub">&#8212; SKUs &middot; &#8212; OEMs</div>
+        <div class="delta-row" id="d41-qty"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Aging (LPN Creation)</div>
+        <div class="kpi-val red" id="k41-aging">&#8212;</div>
+        <div class="kpi-sub">days since LPN creation date</div>
+        <div class="delta-row" id="d41-aging"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">30-Day+ Aging Rate</div>
+        <div class="kpi-val amber" id="k41-o30">&#8212;</div>
+        <div class="kpi-sub">of all inventory rows</div>
+        <div class="delta-row" id="d41-o30"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Store Pullback Ratio</div>
+        <div class="kpi-val purple" id="k41-pbratio">&#8212;</div>
+        <div class="kpi-sub" id="k41-pb-sub">&#8212; pullback &middot; &#8212; customer returns</div>
+        <div class="delta-row" id="d41-pbratio"></div>
+      </div>
+
     </div>
   </div>
 
-  <div class="charts-grid">
-    <div class="chart-card">
-      <div class="chart-title">Daily Intake — Last 10 Days</div>
-      <div class="chart-wrap"><canvas id="intakeChart"></canvas></div>
+  <!-- TREND ROW 1: Total Qty + Avg Aging -->
+  <div class="two-col">
+    <div class="card">
+      <div class="slabel">Total Units &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend41-qty"></canvas>
+      </div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">Disposition Split</div>
-      <div class="chart-wrap"><canvas id="dispositionChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Top OEM Volume (MTD)</div>
-      <div class="chart-wrap"><canvas id="oemChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Category Breakdown</div>
-      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+    <div class="card">
+      <div class="slabel">Avg Aging (Days) &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend41-aging"></canvas>
+      </div>
     </div>
   </div>
 
-  <div class="table-card">
-    <div class="table-header">
-      <div class="table-title">Recent Intake Records</div>
-      <div class="table-count">Showing 10 of 142 today</div>
+  <!-- TREND ROW 2: 30d+ % + BAU vs Pullback -->
+  <div class="two-col">
+    <div class="card">
+      <div class="slabel">30-Day+ Aging Rate (%) &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend41-o30"></canvas>
+      </div>
     </div>
-    <table>
-      <thead>
-        <tr><th>SKU</th><th>OEM</th><th>Category</th><th>Qty</th><th>Disposition</th><th>Date</th></tr>
-      </thead>
-      <tbody id="rtv-table"></tbody>
-    </table>
+    <div class="card">
+      <div class="slabel">Customer Returns vs Store Pullback &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend41-baupb"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- MID ROW: Donut + PB | OEM stacked bar -->
+  <div class="mid-row">
+    <div class="mid-left">
+
+      <!-- Donut -->
+      <div class="card">
+        <div class="slabel">Store Pullback vs Customer Returns</div>
+        <div class="donut-wrap">
+          <canvas id="donut41"></canvas>
+          <div class="donut-center">
+            <div class="donut-val" id="donut41-val">&#8212;</div>
+            <div class="donut-lbl">Total Units</div>
+          </div>
+        </div>
+        <div class="dlegend" id="dleg41"></div>
+      </div>
+
+      <!-- Pullback breakdown -->
+      <div class="card">
+        <div class="slabel">Pullback Event Breakdown</div>
+        <div class="pb-list" id="pb41-list"></div>
+      </div>
+
+    </div>
+
+    <!-- OEM stacked bar -->
+    <div class="card">
+      <div class="slabel">Top 20 Vendors &mdash; Aging Distribution by Unit Count</div>
+      <div class="stack-legend">
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(16,185,129,.8)"></div>Under 30 days (fresh)</div>
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(245,158,11,.8)"></div>30 &ndash; 90 days</div>
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(239,68,68,.8)"></div>Over 90 days (critical)</div>
+      </div>
+      <div style="position:relative;height:500px">
+        <canvas id="oemBar41"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGING TABLE -->
+  <div class="card">
+    <div class="slabel">30d+ Aging SKUs &mdash; Top 30 by Avg Age &nbsp;&middot;&nbsp; Click column header to sort &nbsp;&middot;&nbsp; Click Copy to grab SKU ID</div>
+    <div class="tbl-wrap">
+      <table id="aging41-tbl">
+        <thead><tr>
+          <th data-col="sku">SKU ID</th>
+          <th data-col="descr">Description</th>
+          <th data-col="oem">OEM</th>
+          <th data-col="dist">Distributor</th>
+          <th data-col="qty" class="sort-desc">Qty</th>
+          <th data-col="avg_aging">Avg Aging</th>
+        </tr></thead>
+        <tbody id="aging41-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BOTTOM: Top 20 SKU | OEM Leaderboard -->
+  <div class="two-col">
+
+    <div class="card">
+      <div class="slabel">Top 20 SKUs by Total Quantity</div>
+      <div class="tbl-wrap">
+        <table id="top20-41-tbl">
+          <thead><tr>
+            <th>#</th>
+            <th data-col="sku">SKU ID</th>
+            <th data-col="descr">Description</th>
+            <th data-col="oem">OEM</th>
+            <th data-col="dist">Distributor</th>
+            <th data-col="qty" class="sort-desc">Qty</th>
+            <th data-col="avg_aging">Avg Aging</th>
+          </tr></thead>
+          <tbody id="top20-41-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="slabel">Vendor Aging Leaderboard</div>
+      <div class="tbl-wrap">
+        <table id="oem41-tbl">
+          <thead><tr>
+            <th data-col="oem">OEM</th>
+            <th data-col="dist">Distributor</th>
+            <th data-col="qty" class="sort-desc">Total Units</th>
+            <th data-col="avg_aging">Avg Age</th>
+            <th data-col="over30_pct">Units Over 30d (%)</th>
+          </tr></thead>
+          <tbody id="oem41-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
 </main>
+</div>
+
+<!-- ═══════════════════ FACILITY B TAB ═══════════════════ -->
+<div id="pane-wh72" class="tab-pane">
+<main>
+
+  <div>
+    <div class="slabel">Facility B Snapshot &mdash; Open Box Bid Sale</div>
+    <div class="wh72-kpi">
+
+      <div class="kpi-card">
+        <div class="kpi-label">Total Units</div>
+        <div class="kpi-val cyan" id="k72-qty">&#8212;</div>
+        <div class="kpi-sub" id="k72-sub">&#8212; SKUs &middot; &#8212; OEMs</div>
+        <div class="delta-row" id="d72-qty"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Aging (LPN Creation)</div>
+        <div class="kpi-val green-c" id="k72-aging">&#8212;</div>
+        <div class="kpi-sub">days since LPN creation date</div>
+        <div class="delta-row" id="d72-aging"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">30-Day+ Aging Rate</div>
+        <div class="kpi-val amber" id="k72-o30">&#8212;</div>
+        <div class="kpi-sub">of all inventory rows</div>
+        <div class="delta-row" id="d72-o30"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TREND ROW: Total Units + Avg Aging -->
+  <div class="two-col">
+    <div class="card">
+      <div class="slabel">Total Units &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend72-qty"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="slabel">Avg Aging (Days) &mdash; 62-Day Trend</div>
+      <div style="position:relative;height:200px">
+        <canvas id="trend72-aging"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facility B OEM stacked bar + table -->
+  <div class="two-col">
+
+    <div class="card">
+      <div class="slabel">Top 15 Vendors &mdash; Aging Distribution</div>
+      <div class="stack-legend">
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(16,185,129,.8)"></div>Under 30d</div>
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(245,158,11,.8)"></div>30&ndash;90d</div>
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(239,68,68,.8)"></div>Over 90d</div>
+      </div>
+      <div style="position:relative;height:420px">
+        <canvas id="oemBar72"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="slabel">Top 20 SKUs &mdash; Bid Sale Inventory</div>
+      <div class="tbl-wrap">
+        <table id="top20-72-tbl">
+          <thead><tr>
+            <th>#</th>
+            <th data-col="sku">SKU ID</th>
+            <th data-col="descr">Description</th>
+            <th data-col="oem">OEM</th>
+            <th data-col="dist">Distributor</th>
+            <th data-col="qty" class="sort-desc">Qty</th>
+            <th data-col="avg_aging">Avg Aging</th>
+          </tr></thead>
+          <tbody id="top20-72-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
 
 <footer>
-  <a href="../../index.html">← Portfolio Hub</a> &nbsp;·&nbsp; Brian YT SHIN &nbsp;·&nbsp; Demo Data Only
+  <a href="../../index.html">&#8592; Portfolio Hub</a>
+  &nbsp;&middot;&nbsp; Brian YT SHIN &nbsp;&middot;&nbsp; Demo Data Only
 </footer>
 
 <script>
-const C = { color:'#64748b', font:{size:10} };
-const gridColor = 'rgba(255,255,255,.04)';
+/* ══════════════════════════════════════════════════════
+   DEMO DATA — all values are entirely fictional.
+   No real warehouse, vendor, LPN, or inventory data.
+   ══════════════════════════════════════════════════════ */
 
-new Chart(document.getElementById('intakeChart'),{
-  type:'bar',
-  data:{
-    labels:['Jul 2','Jul 3','Jul 4','Jul 5','Jul 6','Jul 7','Jul 8','Jul 9','Jul 10','Jul 11'],
-    datasets:[
-      {label:'RTV',data:[98,112,87,130,105,94,118,101,109,96],backgroundColor:'rgba(245,158,11,.65)'},
-      {label:'Bid Sale',data:[72,85,68,95,88,77,102,83,91,46],backgroundColor:'rgba(139,92,246,.65)'}
+// 62-day date labels ending 2026-07-11
+const LABELS62 = (function() {
+  const out = [];
+  const end = new Date('2026-07-11');
+  for (let i = 61; i >= 0; i--) {
+    const d = new Date(end.getTime() - i * 86400000);
+    out.push(d.toISOString().slice(5, 10));
+  }
+  return out;
+})();
+
+/* ── FACILITY A DATA ─────────────────────────────────── */
+const W41 = {
+  summary: {
+    total_qty: 5840,
+    total_lpn: 1024,
+    total_sku: 187,
+    total_oem: 22,
+    avg_aging_days: 38.4,
+    over30_lpn_pct: 61.2,
+    bau_qty: 2310,
+    pullback_qty: 3530
+  },
+  pullback_vs_bau: {
+    bau_qty: 2310,
+    bau_lpn: 410,
+    pullback_qty: 3530,
+    pullback_lpn: 614,
+    pullback_breakdown: [
+      {name: "PB-SPRING2026",    qty: 1820},
+      {name: "PB-WINTER2025",    qty: 980},
+      {name: "PB-FALL2025",      qty: 430},
+      {name: "PB-SUMMER2025",    qty: 188},
+      {name: "PB-Q1-2026",       qty: 72},
+      {name: "PB-OCT2025",       qty: 25},
+      {name: "PB-CLEARANCE2025", qty: 15}
     ]
   },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:'#64748b',font:{size:11}}}},
-    scales:{x:{stacked:true,ticks:C,grid:{color:gridColor}},y:{stacked:true,ticks:C,grid:{color:gridColor}}}
+  oem_breakdown: [
+    {oem:"NovaTech",   dist:"PREMIERE",   qty:820,  avg_aging:52,  under30:140, mid:480, over90:200, over30_qty:680,  over30_pct:82.9},
+    {oem:"ArmourX",    dist:"GLOBALTEK",  qty:710,  avg_aging:44,  under30:205, mid:390, over90:115, over30_qty:505,  over30_pct:71.1},
+    {oem:"ClearShell", dist:"VOICELINK",  qty:640,  avg_aging:61,  under30:85,  mid:320, over90:235, over30_qty:555,  over30_pct:86.7},
+    {oem:"SoundCore",  dist:"PREMIERE",   qty:560,  avg_aging:29,  under30:310, mid:210, over90:40,  over30_qty:250,  over30_pct:44.6},
+    {oem:"SnapGuard",  dist:"GLOBALTEK",  qty:490,  avg_aging:72,  under30:60,  mid:290, over90:140, over30_qty:430,  over30_pct:87.8},
+    {oem:"MagLink",    dist:"VOICELINK",  qty:420,  avg_aging:38,  under30:170, mid:195, over90:55,  over30_qty:250,  over30_pct:59.5},
+    {oem:"NexCase",    dist:"PREMIERE",   qty:385,  avg_aging:83,  under30:40,  mid:215, over90:130, over30_qty:345,  over30_pct:89.6},
+    {oem:"GripPro",    dist:"TOTALWIRE",  qty:350,  avg_aging:47,  under30:110, mid:180, over90:60,  over30_qty:240,  over30_pct:68.6},
+    {oem:"AirBuds Co", dist:"PREMIERE",   qty:310,  avg_aging:55,  under30:75,  mid:160, over90:75,  over30_qty:235,  over30_pct:75.8},
+    {oem:"VoltCharge", dist:"GLOBALTEK",  qty:290,  avg_aging:33,  under30:155, mid:110, over90:25,  over30_qty:135,  over30_pct:46.6},
+    {oem:"ProMount",   dist:"VOICELINK",  qty:265,  avg_aging:91,  under30:20,  mid:130, over90:115, over30_qty:245,  over30_pct:92.5},
+    {oem:"SkinWrap",   dist:"TOTALWIRE",  qty:245,  avg_aging:41,  under30:90,  mid:120, over90:35,  over30_qty:155,  over30_pct:63.3},
+    {oem:"PixelFit",   dist:"PREMIERE",   qty:230,  avg_aging:118, under30:15,  mid:90,  over90:125, over30_qty:215,  over30_pct:93.5},
+    {oem:"DuraWrap",   dist:"GLOBALTEK",  qty:210,  avg_aging:36,  under30:100, mid:85,  over90:25,  over30_qty:110,  over30_pct:52.4},
+    {oem:"TechBand",   dist:"VOICELINK",  qty:195,  avg_aging:69,  under30:35,  mid:105, over90:55,  over30_qty:160,  over30_pct:82.1},
+    {oem:"ClearView",  dist:"TOTALWIRE",  qty:180,  avg_aging:27,  under30:125, mid:45,  over90:10,  over30_qty:55,   over30_pct:30.6},
+    {oem:"MaxGrip",    dist:"PREMIERE",   qty:165,  avg_aging:145, under30:10,  mid:55,  over90:100, over30_qty:155,  over30_pct:93.9},
+    {oem:"QuickStrap", dist:"GLOBALTEK",  qty:150,  avg_aging:22,  under30:118, mid:28,  over90:4,   over30_qty:32,   over30_pct:21.3},
+    {oem:"BoltCase",   dist:"VOICELINK",  qty:130,  avg_aging:57,  under30:40,  mid:70,  over90:20,  over30_qty:90,   over30_pct:69.2},
+    {oem:"SlimLine",   dist:"TOTALWIRE",  qty:115,  avg_aging:34,  under30:55,  mid:50,  over90:10,  over30_qty:60,   over30_pct:52.2}
+  ],
+  aging_skus: [
+    {sku:"ACC-40821",descr:"Heavy-Duty Screen Protector XL",     oem:"NovaTech",   dist:"PREMIERE",  qty:310, avg_aging:198},
+    {sku:"ACC-33174",descr:"Magnetic Wallet Case - Black",        oem:"MagLink",    dist:"VOICELINK", qty:285, avg_aging:172},
+    {sku:"ACC-51092",descr:"Tempered Glass 2-Pack",               oem:"ClearShell", dist:"VOICELINK", qty:270, avg_aging:165},
+    {sku:"ACC-28847",descr:"Wireless Charging Pad 15W",           oem:"VoltCharge", dist:"GLOBALTEK", qty:255, avg_aging:148},
+    {sku:"ACC-67340",descr:"Rugged Shockproof Case",              oem:"ArmourX",    dist:"GLOBALTEK", qty:240, avg_aging:141},
+    {sku:"ACC-14563",descr:"True Wireless Earbuds Pro",           oem:"AirBuds Co", dist:"PREMIERE",  qty:228, avg_aging:137},
+    {sku:"ACC-72918",descr:"Car Mount 360-Degree Swivel",         oem:"ProMount",   dist:"VOICELINK", qty:215, avg_aging:134},
+    {sku:"ACC-39204",descr:"Slim Folio Case - Navy",              oem:"NexCase",    dist:"PREMIERE",  qty:202, avg_aging:128},
+    {sku:"ACC-58801",descr:"Pop Grip Expanding Stand",            oem:"GripPro",    dist:"TOTALWIRE", qty:190, avg_aging:121},
+    {sku:"ACC-47753",descr:"USB-C to Lightning Cable 6ft",        oem:"VoltCharge", dist:"GLOBALTEK", qty:182, avg_aging:115},
+    {sku:"ACC-61095",descr:"Full-Body Privacy Screen",            oem:"PixelFit",   dist:"PREMIERE",  qty:175, avg_aging:109},
+    {sku:"ACC-22347",descr:"Snap Ring Holder Case",               oem:"SnapGuard",  dist:"GLOBALTEK", qty:168, avg_aging:104},
+    {sku:"ACC-83021",descr:"Skin Wrap Matte Finish",              oem:"SkinWrap",   dist:"TOTALWIRE", qty:160, avg_aging:98},
+    {sku:"ACC-55679",descr:"Bluetooth Speaker Compact",           oem:"SoundCore",  dist:"PREMIERE",  qty:154, avg_aging:93},
+    {sku:"ACC-71240",descr:"Dual-Port Car Charger Fast",          oem:"VoltCharge", dist:"GLOBALTEK", qty:148, avg_aging:89},
+    {sku:"ACC-30086",descr:"Leather Sleeve Case 6.7in",           oem:"NexCase",    dist:"PREMIERE",  qty:142, avg_aging:85},
+    {sku:"ACC-44912",descr:"Anti-Drop Bumper Case Clear",         oem:"ClearShell", dist:"VOICELINK", qty:136, avg_aging:82},
+    {sku:"ACC-68530",descr:"Watch Band Sport Silicone",           oem:"TechBand",   dist:"VOICELINK", qty:130, avg_aging:79},
+    {sku:"ACC-19874",descr:"Fast Charge Wall Adapter 20W",        oem:"VoltCharge", dist:"GLOBALTEK", qty:125, avg_aging:76},
+    {sku:"ACC-53467",descr:"Hardshell Case with Kickstand",       oem:"MaxGrip",    dist:"PREMIERE",  qty:120, avg_aging:74},
+    {sku:"ACC-87302",descr:"Wrist Strap Phone Lanyard",           oem:"QuickStrap", dist:"GLOBALTEK", qty:115, avg_aging:71},
+    {sku:"ACC-26541",descr:"Privacy Tempered Glass Film",         oem:"PixelFit",   dist:"PREMIERE",  qty:110, avg_aging:68},
+    {sku:"ACC-74108",descr:"Magnetic Car Vent Mount",             oem:"ProMount",   dist:"VOICELINK", qty:106, avg_aging:65},
+    {sku:"ACC-43890",descr:"Thin Silicone Case Pastel Pink",      oem:"NovaTech",   dist:"PREMIERE",  qty:102, avg_aging:63},
+    {sku:"ACC-62277",descr:"Screen Cleaning Kit",                 oem:"ClearView",  dist:"TOTALWIRE", qty:98,  avg_aging:61},
+    {sku:"ACC-31590",descr:"Grip Ring Holder Metallic",           oem:"GripPro",    dist:"TOTALWIRE", qty:94,  avg_aging:59},
+    {sku:"ACC-50834",descr:"Braided USB-C Cable 3ft",             oem:"VoltCharge", dist:"GLOBALTEK", qty:90,  avg_aging:57},
+    {sku:"ACC-78451",descr:"Neck Lanyard Case Crossbody",         oem:"ArmourX",    dist:"GLOBALTEK", qty:87,  avg_aging:55},
+    {sku:"ACC-15672",descr:"Watch Band Mesh Stainless",           oem:"TechBand",   dist:"VOICELINK", qty:84,  avg_aging:53},
+    {sku:"ACC-69034",descr:"Anti-Glare Screen Film",              oem:"ClearShell", dist:"VOICELINK", qty:81,  avg_aging:52}
+  ],
+  top_20_skus: [
+    {sku:"ACC-40821",descr:"Heavy-Duty Screen Protector XL",     oem:"NovaTech",   dist:"PREMIERE",  qty:310, avg_aging:198},
+    {sku:"ACC-33174",descr:"Magnetic Wallet Case - Black",        oem:"MagLink",    dist:"VOICELINK", qty:285, avg_aging:172},
+    {sku:"ACC-51092",descr:"Tempered Glass 2-Pack",               oem:"ClearShell", dist:"VOICELINK", qty:270, avg_aging:165},
+    {sku:"ACC-28847",descr:"Wireless Charging Pad 15W",           oem:"VoltCharge", dist:"GLOBALTEK", qty:255, avg_aging:148},
+    {sku:"ACC-67340",descr:"Rugged Shockproof Case",              oem:"ArmourX",    dist:"GLOBALTEK", qty:240, avg_aging:141},
+    {sku:"ACC-14563",descr:"True Wireless Earbuds Pro",           oem:"AirBuds Co", dist:"PREMIERE",  qty:228, avg_aging:137},
+    {sku:"ACC-72918",descr:"Car Mount 360-Degree Swivel",         oem:"ProMount",   dist:"VOICELINK", qty:215, avg_aging:134},
+    {sku:"ACC-39204",descr:"Slim Folio Case - Navy",              oem:"NexCase",    dist:"PREMIERE",  qty:202, avg_aging:128},
+    {sku:"ACC-58801",descr:"Pop Grip Expanding Stand",            oem:"GripPro",    dist:"TOTALWIRE", qty:190, avg_aging:121},
+    {sku:"ACC-47753",descr:"USB-C to Lightning Cable 6ft",        oem:"VoltCharge", dist:"GLOBALTEK", qty:182, avg_aging:115},
+    {sku:"ACC-61095",descr:"Full-Body Privacy Screen",            oem:"PixelFit",   dist:"PREMIERE",  qty:175, avg_aging:109},
+    {sku:"ACC-22347",descr:"Snap Ring Holder Case",               oem:"SnapGuard",  dist:"GLOBALTEK", qty:168, avg_aging:104},
+    {sku:"ACC-83021",descr:"Skin Wrap Matte Finish",              oem:"SkinWrap",   dist:"TOTALWIRE", qty:160, avg_aging:98},
+    {sku:"ACC-55679",descr:"Bluetooth Speaker Compact",           oem:"SoundCore",  dist:"PREMIERE",  qty:154, avg_aging:93},
+    {sku:"ACC-71240",descr:"Dual-Port Car Charger Fast",          oem:"VoltCharge", dist:"GLOBALTEK", qty:148, avg_aging:89},
+    {sku:"ACC-30086",descr:"Leather Sleeve Case 6.7in",           oem:"NexCase",    dist:"PREMIERE",  qty:142, avg_aging:85},
+    {sku:"ACC-44912",descr:"Anti-Drop Bumper Case Clear",         oem:"ClearShell", dist:"VOICELINK", qty:136, avg_aging:82},
+    {sku:"ACC-68530",descr:"Watch Band Sport Silicone",           oem:"TechBand",   dist:"VOICELINK", qty:130, avg_aging:79},
+    {sku:"ACC-19874",descr:"Fast Charge Wall Adapter 20W",        oem:"VoltCharge", dist:"GLOBALTEK", qty:125, avg_aging:76},
+    {sku:"ACC-53467",descr:"Hardshell Case with Kickstand",       oem:"MaxGrip",    dist:"PREMIERE",  qty:120, avg_aging:74}
+  ],
+  // 62-point hardcoded trend series
+  history_qty:   [4820,4850,4890,4910,4975,5010,5055,5080,5110,5090,5140,5175,5200,5230,5215,5260,5290,5310,5345,5380,5360,5410,5440,5470,5500,5485,5530,5560,5590,5620,5610,5650,5680,5700,5730,5715,5760,5790,5810,5840,5825,5860,5890,5910,5940,5965,5950,5980,5995,6010,6030,5990,6020,6050,6040,6070,6085,6060,5980,5900,5860,5840],
+  history_aging: [29.1,29.4,29.8,30.2,30.5,30.9,31.2,31.6,32.0,32.3,32.7,33.1,33.4,33.8,33.6,34.0,34.3,34.7,35.1,35.4,35.2,35.6,35.9,36.3,36.7,36.5,36.9,37.2,37.6,38.0,37.8,38.2,38.5,38.9,39.2,39.0,39.4,39.7,39.5,39.9,39.7,40.0,40.3,40.1,40.4,40.7,40.5,40.8,41.0,40.8,41.1,40.9,41.2,41.0,40.8,40.5,40.2,39.9,39.5,39.1,38.7,38.4],
+  history_o30:   [48.1,48.5,48.9,49.2,49.6,50.0,50.3,50.7,51.0,51.3,51.7,52.0,52.3,52.7,52.5,52.9,53.2,53.6,54.0,54.3,54.1,54.5,54.8,55.2,55.5,55.3,55.7,56.0,56.4,56.7,56.5,56.9,57.2,57.6,57.9,57.7,58.1,58.4,58.2,58.6,58.4,58.8,59.1,58.9,59.3,59.6,59.4,59.8,60.1,59.9,60.2,59.8,60.1,60.4,60.2,60.6,60.9,61.1,60.9,61.3,61.1,61.2],
+  history_bau:   [1820,1835,1848,1862,1875,1888,1900,1912,1924,1915,1930,1942,1955,1968,1960,1975,1988,2000,2012,2025,2018,2032,2045,2058,2070,2062,2075,2088,2100,2112,2105,2118,2130,2142,2155,2148,2160,2172,2165,2178,2170,2183,2195,2188,2200,2212,2205,2218,2230,2222,2235,2220,2232,2245,2238,2250,2255,2248,2260,2272,2285,2310],
+  history_pb:    [2800,2815,2830,2842,2855,2868,2880,2892,2904,2895,2910,2922,2935,2948,2940,2955,2968,2980,2992,3005,2998,3012,3025,3038,3050,3042,3055,3068,3080,3092,3085,3098,3110,3122,3135,3128,3140,3152,3145,3158,3150,3163,3175,3168,3180,3192,3185,3198,3210,3202,3215,3200,3212,3225,3218,3230,3242,3235,3448,3490,3510,3530]
+};
+
+/* ── FACILITY B DATA ─────────────────────────────────── */
+const W72 = {
+  summary: {
+    total_qty: 3120,
+    total_lpn: 548,
+    total_sku: 94,
+    total_oem: 15,
+    avg_aging_days: 26.8,
+    over30_lpn_pct: 44.3
+  },
+  oem_breakdown: [
+    {oem:"NovaTech",   dist:"PREMIERE",  qty:480,  avg_aging:32,  under30:240, mid:185, over90:55,  over30_qty:240,  over30_pct:50.0},
+    {oem:"ArmourX",    dist:"GLOBALTEK", qty:415,  avg_aging:28,  under30:255, mid:140, over90:20,  over30_qty:160,  over30_pct:38.6},
+    {oem:"ClearShell", dist:"VOICELINK", qty:380,  avg_aging:35,  under30:195, mid:155, over90:30,  over30_qty:185,  over30_pct:48.7},
+    {oem:"SoundCore",  dist:"PREMIERE",  qty:340,  avg_aging:24,  under30:225, mid:100, over90:15,  over30_qty:115,  over30_pct:33.8},
+    {oem:"SnapGuard",  dist:"GLOBALTEK", qty:295,  avg_aging:41,  under30:145, mid:120, over90:30,  over30_qty:150,  over30_pct:50.8},
+    {oem:"MagLink",    dist:"VOICELINK", qty:260,  avg_aging:29,  under30:158, mid:85,  over90:17,  over30_qty:102,  over30_pct:39.2},
+    {oem:"NexCase",    dist:"PREMIERE",  qty:225,  avg_aging:38,  under30:110, mid:90,  over90:25,  over30_qty:115,  over30_pct:51.1},
+    {oem:"GripPro",    dist:"TOTALWIRE", qty:200,  avg_aging:22,  under30:145, mid:48,  over90:7,   over30_qty:55,   over30_pct:27.5},
+    {oem:"VoltCharge", dist:"GLOBALTEK", qty:175,  avg_aging:31,  under30:98,  mid:65,  over90:12,  over30_qty:77,   over30_pct:44.0},
+    {oem:"ProMount",   dist:"VOICELINK", qty:150,  avg_aging:44,  under30:65,  mid:70,  over90:15,  over30_qty:85,   over30_pct:56.7},
+    {oem:"SkinWrap",   dist:"TOTALWIRE", qty:130,  avg_aging:19,  under30:110, mid:18,  over90:2,   over30_qty:20,   over30_pct:15.4},
+    {oem:"PixelFit",   dist:"PREMIERE",  qty:110,  avg_aging:55,  under30:38,  mid:52,  over90:20,  over30_qty:72,   over30_pct:65.5},
+    {oem:"TechBand",   dist:"VOICELINK", qty:95,   avg_aging:27,  under30:60,  mid:30,  over90:5,   over30_qty:35,   over30_pct:36.8},
+    {oem:"MaxGrip",    dist:"PREMIERE",  qty:80,   avg_aging:48,  under30:30,  mid:35,  over90:15,  over30_qty:50,   over30_pct:62.5},
+    {oem:"BoltCase",   dist:"VOICELINK", qty:65,   avg_aging:33,  under30:36,  mid:22,  over90:7,   over30_qty:29,   over30_pct:44.6}
+  ],
+  top_20_skus: [
+    {sku:"ACC-70114",descr:"Open Box Phone Case Bundle",          oem:"NovaTech",   dist:"PREMIERE",  qty:185, avg_aging:36},
+    {sku:"ACC-82230",descr:"Open Box Screen Protector 3-Pack",    oem:"ClearShell", dist:"VOICELINK", qty:172, avg_aging:29},
+    {sku:"ACC-61547",descr:"Open Box Wireless Earbuds",           oem:"SoundCore",  dist:"PREMIERE",  qty:158, avg_aging:22},
+    {sku:"ACC-34891",descr:"Open Box Car Mount Kit",              oem:"ProMount",   dist:"VOICELINK", qty:144, avg_aging:44},
+    {sku:"ACC-59023",descr:"Open Box Fast Charger Bundle",        oem:"VoltCharge", dist:"GLOBALTEK", qty:132, avg_aging:31},
+    {sku:"ACC-78654",descr:"Open Box Rugged Case - Assorted",     oem:"ArmourX",    dist:"GLOBALTEK", qty:121, avg_aging:25},
+    {sku:"ACC-43317",descr:"Open Box Pop Grip 2-Pack",            oem:"GripPro",    dist:"TOTALWIRE", qty:112, avg_aging:19},
+    {sku:"ACC-66780",descr:"Open Box Watch Band Set",             oem:"TechBand",   dist:"VOICELINK", qty:104, avg_aging:27},
+    {sku:"ACC-21098",descr:"Open Box Privacy Screen Film",        oem:"PixelFit",   dist:"PREMIERE",  qty:97,  avg_aging:55},
+    {sku:"ACC-55431",descr:"Open Box Snap Case Clear",            oem:"SnapGuard",  dist:"GLOBALTEK", qty:90,  avg_aging:41},
+    {sku:"ACC-38746",descr:"Open Box Leather Wallet Case",        oem:"MagLink",    dist:"VOICELINK", qty:84,  avg_aging:29},
+    {sku:"ACC-74209",descr:"Open Box Skin Wrap - Matte",          oem:"SkinWrap",   dist:"TOTALWIRE", qty:78,  avg_aging:18},
+    {sku:"ACC-29563",descr:"Open Box Hardshell Case Duo",         oem:"MaxGrip",    dist:"PREMIERE",  qty:72,  avg_aging:48},
+    {sku:"ACC-91034",descr:"Open Box Slim Folio Black",           oem:"NexCase",    dist:"PREMIERE",  qty:67,  avg_aging:38},
+    {sku:"ACC-48872",descr:"Open Box USB-C Hub 4-Port",           oem:"VoltCharge", dist:"GLOBALTEK", qty:63,  avg_aging:33},
+    {sku:"ACC-15640",descr:"Open Box Armored Case - Gray",        oem:"ArmourX",    dist:"GLOBALTEK", qty:58,  avg_aging:22},
+    {sku:"ACC-87123",descr:"Open Box Bolt Slim Case",             oem:"BoltCase",   dist:"VOICELINK", qty:54,  avg_aging:33},
+    {sku:"ACC-32481",descr:"Open Box Charging Mat 10W",           oem:"VoltCharge", dist:"GLOBALTEK", qty:50,  avg_aging:28},
+    {sku:"ACC-67354",descr:"Open Box Speaker Bar Mini",           oem:"SoundCore",  dist:"PREMIERE",  qty:47,  avg_aging:24},
+    {sku:"ACC-54219",descr:"Open Box Bumper Case TPU",            oem:"ClearShell", dist:"VOICELINK", qty:44,  avg_aging:31}
+  ],
+  history_qty:   [2480,2495,2510,2528,2542,2556,2570,2585,2598,2590,2605,2620,2634,2648,2640,2655,2670,2682,2695,2710,2702,2718,2732,2745,2760,2752,2767,2780,2795,2808,2800,2815,2828,2842,2855,2848,2862,2875,2888,2900,2892,2906,2920,2912,2926,2940,2932,2946,2960,2952,2965,2950,2962,2975,2968,2980,2994,2985,3010,3040,3080,3120],
+  history_aging: [18.2,18.5,18.8,19.1,19.4,19.7,20.0,20.3,20.6,20.4,20.7,21.0,21.3,21.6,21.4,21.7,22.0,22.3,22.6,22.9,22.7,23.0,23.3,23.6,23.9,23.7,24.0,24.3,24.6,24.9,24.7,25.0,25.3,25.6,25.8,25.6,25.9,26.2,26.0,26.3,26.1,26.4,26.7,26.5,26.8,27.0,26.8,27.1,27.3,27.1,27.4,27.2,27.5,27.3,27.1,27.0,26.9,26.8,26.7,26.8,26.8,26.8]
+};
+
+/* ══════════════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════════════ */
+const fmt = n => (n == null ? '\u2014' : n.toLocaleString());
+
+function achip(d) {
+  if (d >= 180) return '<span class="achip a-crit">' + d + 'd</span>';
+  if (d >= 90)  return '<span class="achip a-high">' + d + 'd</span>';
+  if (d >= 30)  return '<span class="achip a-med">'  + d + 'd</span>';
+  return               '<span class="achip a-ok">'   + d + 'd</span>';
+}
+
+function copy(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1500);
+  });
+}
+
+/* ── Delta chips ─────────────────────────────────────── */
+function deltaChipVal(cur, prev, higherIsBad, label) {
+  if (prev == null) return '<span class="delta-chip"><span class="dc-lbl">' + label + '</span><span class="dc-val" style="color:var(--text3)">\u2014</span></span>';
+  const diff = cur - prev;
+  if (Math.abs(diff) < 0.05) return '<span class="delta-chip"><span class="dc-lbl">' + label + '</span><span class="dc-val" style="color:var(--text3)">\u2014</span></span>';
+  const pct   = prev !== 0 ? Math.abs(diff / prev * 100).toFixed(1) : '\u2014';
+  const arrow = diff > 0 ? '\u25b2' : '\u25bc';
+  const color = higherIsBad === null
+    ? 'var(--text2)'
+    : ((diff > 0 === higherIsBad) ? 'var(--red)' : 'var(--green)');
+  return '<span class="delta-chip"><span class="dc-lbl">' + label + '</span><span class="dc-val" style="color:' + color + '">' + arrow + pct + '%</span></span>';
+}
+
+function renderDeltaRow(elId, series, curVal, higherIsBad) {
+  const n = series.length;
+  document.getElementById(elId).innerHTML =
+    deltaChipVal(curVal, n >= 2  ? series[n-2]  : null, higherIsBad, 'DoD') +
+    deltaChipVal(curVal, n >= 8  ? series[n-8]  : null, higherIsBad, 'WoW') +
+    deltaChipVal(curVal, n >= 31 ? series[n-31] : null, higherIsBad, 'MoM');
+}
+
+/* ══════════════════════════════════════════════════════
+   KPI RENDER
+   ══════════════════════════════════════════════════════ */
+function kpi41() {
+  const s = W41.summary;
+  document.getElementById('k41-qty').textContent    = fmt(s.total_qty);
+  document.getElementById('k41-sub').textContent    = fmt(s.total_sku) + ' SKUs \u00b7 ' + fmt(s.total_oem) + ' OEMs';
+  document.getElementById('k41-aging').textContent  = s.avg_aging_days + 'd';
+  document.getElementById('k41-o30').textContent    = s.over30_lpn_pct + '%';
+  const pbRatio = (s.pullback_qty / (s.bau_qty + s.pullback_qty) * 100).toFixed(1);
+  document.getElementById('k41-pbratio').textContent = pbRatio + '%';
+  document.getElementById('k41-pb-sub').textContent  = fmt(s.pullback_qty) + ' pullback \u00b7 ' + fmt(s.bau_qty) + ' customer returns';
+  document.getElementById('tab-badge-41').textContent = fmt(s.total_qty);
+  renderDeltaRow('d41-qty',   W41.history_qty,   s.total_qty,       false);
+  renderDeltaRow('d41-aging', W41.history_aging,  s.avg_aging_days,  true);
+  renderDeltaRow('d41-o30',   W41.history_o30,    s.over30_lpn_pct,  true);
+  // pullback ratio deltas
+  const pbSeries = W41.history_pb.map((pb, i) => {
+    const bau = W41.history_bau[i];
+    return pb + bau > 0 ? pb / (pb + bau) * 100 : 0;
+  });
+  renderDeltaRow('d41-pbratio', pbSeries, parseFloat(pbRatio), true);
+}
+
+function kpi72() {
+  const s = W72.summary;
+  document.getElementById('k72-qty').textContent   = fmt(s.total_qty);
+  document.getElementById('k72-sub').textContent   = fmt(s.total_sku) + ' SKUs \u00b7 ' + fmt(s.total_oem) + ' OEMs';
+  document.getElementById('k72-aging').textContent = s.avg_aging_days + 'd';
+  document.getElementById('k72-o30').textContent   = s.over30_lpn_pct + '%';
+  document.getElementById('tab-badge-72').textContent = fmt(s.total_qty);
+  renderDeltaRow('d72-qty',   W72.history_qty,   s.total_qty,       false);
+  renderDeltaRow('d72-aging', W72.history_aging,  s.avg_aging_days,  true);
+  // construct an approximate o30 series for facility b
+  const o30s = W72.history_aging.map(a => Math.max(10, Math.min(65, a * 1.65)).toFixed(1) * 1);
+  renderDeltaRow('d72-o30', o30s, s.over30_lpn_pct, true);
+}
+
+/* ══════════════════════════════════════════════════════
+   CHART DEFAULTS
+   ══════════════════════════════════════════════════════ */
+const CHART_DEFAULTS = {
+  responsive: true, maintainAspectRatio: false,
+  interaction: {mode:'index', intersect:false},
+  plugins: {
+    legend: {display:false},
+    tooltip: {
+      backgroundColor:'rgba(13,15,26,.95)',
+      borderColor:'rgba(255,255,255,.08)', borderWidth:1,
+      titleColor:'#e2e8f0', bodyColor:'#94a3b8',
+      titleFont:{size:11}, bodyFont:{size:11},
+    }
+  },
+  scales: {
+    x: {
+      grid: {color:'rgba(255,255,255,.03)'},
+      ticks: {color:'#475569', font:{size:9}, maxTicksLimit:20, maxRotation:45, autoSkip:true},
+    },
+    y: {
+      grid: {color:'rgba(255,255,255,.04)'},
+      ticks: {color:'#64748b', font:{size:10}},
+    }
   }
-});
+};
 
-new Chart(document.getElementById('dispositionChart'),{
-  type:'doughnut',
-  data:{
-    labels:['RTV','Bid Sale','Hold','Scrap'],
-    datasets:[{data:[2104,1743,312,188],
-      backgroundColor:['rgba(245,158,11,.7)','rgba(139,92,246,.7)','rgba(59,130,246,.7)','rgba(239,68,68,.7)'],
-      borderWidth:1}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:11}}}}}
-});
+const CHARTS = {};
 
-new Chart(document.getElementById('oemChart'),{
-  type:'bar',
-  data:{
-    labels:['OEM A','OEM B','OEM C','OEM D','OEM E','OEM F'],
-    datasets:[{label:'Units',data:[980,724,612,541,423,567],
-      backgroundColor:'rgba(6,182,212,.65)',borderRadius:4}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    plugins:{legend:{display:false}},
-    scales:{x:{ticks:C,grid:{color:gridColor}},y:{ticks:C,grid:{color:gridColor}}}
-  }
-});
+function trendLine(canvasId, labels, datasets, yFmt) {
+  const opts = JSON.parse(JSON.stringify(CHART_DEFAULTS));
+  if (yFmt) opts.scales.y.ticks.callback = yFmt;
+  if (datasets.length > 1) opts.plugins.legend.display = true;
+  CHARTS[canvasId] = new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: { labels, datasets },
+    options: opts,
+  });
+}
 
-new Chart(document.getElementById('categoryChart'),{
-  type:'doughnut',
-  data:{
-    labels:['Chargers','Cases','Cables','Earbuds','Screen Protectors','Other'],
-    datasets:[{data:[1240,860,720,490,320,217],
-      backgroundColor:['rgba(6,182,212,.7)','rgba(139,92,246,.7)','rgba(16,185,129,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.7)','rgba(100,116,139,.7)'],
-      borderWidth:1}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:11}}}}}
-});
+function mkDataset(label, data, color, fill) {
+  return {
+    label, data,
+    borderColor: color,
+    backgroundColor: fill || color.replace(')', ', 0.08)').replace('rgb', 'rgba'),
+    borderWidth: 2,
+    pointRadius: 0,
+    pointHoverRadius: 4,
+    tension: 0.3,
+    fill: !!fill,
+  };
+}
 
-const tableData = [
-  ['ACC-00412','OEM A','Chargers',24,'RTV'],
-  ['ACC-00387','OEM B','Cases',15,'Bid Sale'],
-  ['ACC-00401','OEM C','Cables',32,'RTV'],
-  ['ACC-00428','OEM A','Earbuds',8,'Bid Sale'],
-  ['ACC-00395','OEM D','Screen Protectors',18,'RTV'],
-  ['ACC-00419','OEM E','Chargers',11,'Bid Sale'],
-  ['ACC-00433','OEM B','Cables',26,'RTV'],
-  ['ACC-00408','OEM F','Cases',9,'Hold'],
-  ['ACC-00416','OEM C','Earbuds',14,'Bid Sale'],
-  ['ACC-00422','OEM A','Chargers',19,'RTV'],
-];
-const dispClass = {RTV:'pill-amber','Bid Sale':'pill-bid',Hold:'pill-amber',Scrap:'pill-rtv'};
-const tb = document.getElementById('rtv-table');
-tableData.forEach(r => {
-  tb.innerHTML += `<tr>
-    <td style="font-family:monospace">${r[0]}</td>
-    <td>${r[1]}</td>
-    <td>${r[2]}</td>
-    <td style="font-weight:600">${r[3]}</td>
-    <td><span class="pill ${dispClass[r[3]]||'pill-amber'}">${r[3]}</span></td>
-    <td style="color:var(--muted)">Jul 11</td>
-  </tr>`;
-});
+/* ══════════════════════════════════════════════════════
+   DONUT
+   ══════════════════════════════════════════════════════ */
+function donut41() {
+  const p = W41.pullback_vs_bau;
+  const total = p.bau_qty + p.pullback_qty;
+  document.getElementById('donut41-val').textContent = fmt(total);
+  new Chart(document.getElementById('donut41'), {
+    type:'doughnut',
+    data:{
+      labels:['Customer Returns','Store Pullback'],
+      datasets:[{
+        data:[p.bau_qty, p.pullback_qty],
+        backgroundColor:['rgba(6,182,212,.72)','rgba(139,92,246,.72)'],
+        borderColor:['rgba(6,182,212,.25)','rgba(139,92,246,.25)'],
+        borderWidth:1,
+        hoverBackgroundColor:['rgba(6,182,212,.9)','rgba(139,92,246,.9)'],
+      }]
+    },
+    options:{
+      cutout:'73%', responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+fmt(c.raw)+' units'}}}
+    }
+  });
+  const bauPct = (p.bau_qty/total*100).toFixed(1);
+  const pbPct  = (p.pullback_qty/total*100).toFixed(1);
+  document.getElementById('dleg41').innerHTML = [
+    {c:'var(--cyan)',   l:'Customer Returns', v:fmt(p.bau_qty),      p:bauPct},
+    {c:'var(--purple)', l:'Store Pullback',   v:fmt(p.pullback_qty), p:pbPct},
+  ].map(e=>'<div class="dleg-item"><div class="dleg-dot" style="background:'+e.c+'"></div><span class="dleg-lbl">'+e.l+'</span><span class="dleg-val" style="color:'+e.c+'">'+e.v+'</span><span style="color:var(--text3);font-size:11px;margin-left:4px">'+e.p+'%</span></div>').join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   PULLBACK BREAKDOWN
+   ══════════════════════════════════════════════════════ */
+function pb41() {
+  const list = W41.pullback_vs_bau.pullback_breakdown;
+  const max  = list[0] ? list[0].qty : 1;
+  document.getElementById('pb41-list').innerHTML = list.map(r =>
+    '<div class="pb-row"><span class="pb-name">' + r.name + '</span><div class="pb-bar-bg"><div class="pb-bar" style="width:' + (r.qty/max*100).toFixed(1) + '%"></div></div><span class="pb-qty">' + fmt(r.qty) + '</span></div>'
+  ).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   OEM STACKED BAR
+   ══════════════════════════════════════════════════════ */
+function oemBar(canvasId, oems, maxItems) {
+  const top    = oems.slice(0, maxItems);
+  const labels = top.map(o => o.oem);
+  CHARTS[canvasId] = new Chart(document.getElementById(canvasId), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Under 30d', data:top.map(o=>o.under30), backgroundColor:'rgba(16,185,129,.78)', borderWidth:0, borderRadius:{topLeft:0,topRight:0,bottomLeft:3,bottomRight:3}},
+        {label:'30\u201390d',    data:top.map(o=>o.mid),     backgroundColor:'rgba(245,158,11,.78)', borderWidth:0},
+        {label:'Over 90d',  data:top.map(o=>o.over90),  backgroundColor:'rgba(239,68,68,.78)',  borderWidth:0, borderRadius:{topLeft:3,topRight:3,bottomLeft:0,bottomRight:0}},
+      ]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(13,15,26,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,
+          titleColor:'#e2e8f0',bodyColor:'#94a3b8',
+          callbacks:{afterBody:(items)=>{
+            const o=top[items[0].dataIndex];
+            return['Total: '+fmt(o.qty),'Avg aging: '+o.avg_aging+'d','30d+ rate: '+o.over30_pct+'%','Distributor: '+o.dist];
+          }}
+        }
+      },
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#64748b',font:{size:11},callback:v=>fmt(v)}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#94a3b8',font:{size:11}}}
+      }
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   SORTABLE TABLES
+   ══════════════════════════════════════════════════════ */
+function makeSortable(tableId, initData, renderFn) {
+  const tbl = document.getElementById(tableId);
+  let sCol = null, sDir = -1;
+  tbl.querySelectorAll('thead th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const c = th.dataset.col;
+      sDir = (sCol === c) ? sDir * -1 : -1;
+      sCol = c;
+      tbl.querySelectorAll('thead th').forEach(h => h.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(sDir === -1 ? 'sort-desc' : 'sort-asc');
+      const sorted = [...initData].sort((a,b) => {
+        const av = a[c] != null ? a[c] : '', bv = b[c] != null ? b[c] : '';
+        return typeof av === 'number' ? (av-bv)*sDir : String(av).localeCompare(String(bv))*sDir;
+      });
+      renderFn(sorted);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   RENDER TABLES
+   ══════════════════════════════════════════════════════ */
+function renderAging41(data) {
+  document.getElementById('aging41-body').innerHTML = data.map(r =>
+    '<tr><td><span class="td-mono">' + r.sku + '</span>&nbsp;<button class="copy-btn" onclick="copy(\''+r.sku+'\',this)">Copy</button></td>' +
+    '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">' + r.descr + '</td>' +
+    '<td class="td-b">' + r.oem + '</td>' +
+    '<td style="color:var(--text3)">' + r.dist + '</td>' +
+    '<td class="td-b">' + fmt(r.qty) + '</td>' +
+    '<td>' + achip(r.avg_aging) + '</td></tr>'
+  ).join('');
+}
+
+function renderTop20(bodyId, data) {
+  document.getElementById(bodyId).innerHTML = data.map((r,i) =>
+    '<tr><td><span class="rank ' + (i<3?'r'+(i+1):'') + '">' + (i+1) + '</span></td>' +
+    '<td><span class="td-mono">' + r.sku + '</span>&nbsp;<button class="copy-btn" onclick="copy(\''+r.sku+'\',this)">Copy</button></td>' +
+    '<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis">' + r.descr + '</td>' +
+    '<td class="td-b">' + r.oem + '</td>' +
+    '<td style="color:var(--text3)">' + r.dist + '</td>' +
+    '<td class="td-b">' + fmt(r.qty) + '</td>' +
+    '<td>' + achip(r.avg_aging) + '</td></tr>'
+  ).join('');
+}
+
+function renderOEM41(data) {
+  document.getElementById('oem41-body').innerHTML = data.map(r => {
+    const c = r.over30_pct >= 70 ? 'var(--red)' : r.over30_pct >= 40 ? 'var(--amber)' : 'var(--green)';
+    return '<tr><td class="td-b">' + r.oem + '</td>' +
+      '<td style="color:var(--text3)">' + r.dist + '</td>' +
+      '<td class="td-b">' + fmt(r.qty) + '</td>' +
+      '<td>' + achip(r.avg_aging) + '</td>' +
+      '<td><span style="font-weight:700;color:' + c + '">' + r.over30_pct + '%</span>' +
+      '<span style="font-size:10px;color:var(--text3);margin-left:4px">(' + fmt(r.over30_qty) + ' units)</span></td></tr>';
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   TAB SWITCH
+   ══════════════════════════════════════════════════════ */
+const TAB_CHARTS = {
+  wh41: ['trend41-qty','trend41-aging','trend41-o30','trend41-baupb','oemBar41'],
+  wh72: ['trend72-qty','trend72-aging','oemBar72'],
+};
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const p = document.getElementById('pane-' + id);
+  p.classList.add('active');
+  p.animate(
+    [{opacity:0, transform:'translateY(10px)'}, {opacity:1, transform:'translateY(0)'}],
+    {duration:280, easing:'ease', fill:'forwards'}
+  );
+  (TAB_CHARTS[id] || []).forEach(cid => { const c=CHARTS[cid]; if(c){ c.reset(); c.update(); } });
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════ */
+kpi41();
+kpi72();
+donut41();
+pb41();
+
+// Facility A trend charts
+trendLine('trend41-qty',   LABELS62, [mkDataset('Total Units',     W41.history_qty,   'rgb(6,182,212)',  'rgba(6,182,212,0.08)')],  v => fmt(v));
+trendLine('trend41-aging', LABELS62, [mkDataset('Avg Aging (d)',    W41.history_aging, 'rgb(239,68,68)',  'rgba(239,68,68,0.08)')],   v => v + 'd');
+trendLine('trend41-o30',   LABELS62, [mkDataset('30d+ %',           W41.history_o30,   'rgb(245,158,11)', 'rgba(245,158,11,0.08)')],  v => v + '%');
+trendLine('trend41-baupb', LABELS62, [
+  mkDataset('Customer Returns', W41.history_bau, 'rgb(6,182,212)',  'rgba(6,182,212,0.06)'),
+  mkDataset('Store Pullback',   W41.history_pb,  'rgb(139,92,246)', 'rgba(139,92,246,0.06)'),
+], v => fmt(v));
+
+// Facility B trend charts
+trendLine('trend72-qty',   LABELS62, [mkDataset('Total Units',     W72.history_qty,   'rgb(6,182,212)',  'rgba(6,182,212,0.08)')],  v => fmt(v));
+trendLine('trend72-aging', LABELS62, [mkDataset('Avg Aging (d)',    W72.history_aging, 'rgb(16,185,129)', 'rgba(16,185,129,0.08)')], v => v + 'd');
+
+// OEM stacked bars
+oemBar('oemBar41', W41.oem_breakdown, 20);
+oemBar('oemBar72', W72.oem_breakdown, 15);
+
+// Tables
+renderAging41(W41.aging_skus);
+renderTop20('top20-41-body', W41.top_20_skus);
+renderOEM41(W41.oem_breakdown);
+renderTop20('top20-72-body', W72.top_20_skus);
+
+// Sortable columns
+makeSortable('aging41-tbl',  W41.aging_skus,   renderAging41);
+makeSortable('top20-41-tbl', W41.top_20_skus,  d => renderTop20('top20-41-body', d));
+makeSortable('oem41-tbl',    W41.oem_breakdown, renderOEM41);
+makeSortable('top20-72-tbl', W72.top_20_skus,  d => renderTop20('top20-72-body', d));
 </script>
 </body>
 </html>

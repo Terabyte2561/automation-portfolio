@@ -1,266 +1,1075 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Manual Storage Dashboard — Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{
-  --bg:#07080f;--card:#0d0f1a;--border:rgba(255,255,255,.06);
-  --accent:#06b6d4;--cyan-d:rgba(6,182,212,.12);
-  --text:#e2e8f0;--muted:#64748b;
-  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;
+:root {
+  --bg:      #080c14;
+  --card:    #0d1525;
+  --border:  #1c2d42;
+  --text:    #e2e8f0;
+  --muted:   #64748b;
+  --accent:  #22d3ee;
+  --red:     #ef4444;
+  --orange:  #f97316;
+  --green:   #10b981;
+  --blue:    #3b82f6;
+  --violet:  #8b5cf6;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--card)} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
 
-.demo-banner{background:rgba(139,92,246,.08);border-bottom:1px solid rgba(139,92,246,.2);
-  padding:.55rem 2rem;text-align:center;font-size:.72rem;color:#a78bfa;
-  display:flex;align-items:center;justify-content:center;gap:.5rem}
-.demo-banner a{color:rgba(167,139,250,.8);text-decoration:none;font-weight:600}
+/* ── Demo Banner ── */
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 32px;
+  background: linear-gradient(90deg, #2d1b69 0%, #1e1040 100%);
+  border-bottom: 1px solid #7c3aed44;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: #c4b5fd;
+  position: sticky; top: 0; z-index: 200;
+}
+.demo-banner .demo-left { display: flex; align-items: center; gap: 8px; }
+.demo-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #7c3aed22; border: 1px solid #7c3aed55;
+  padding: 3px 10px; border-radius: 20px; color: #a78bfa;
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+}
+.demo-banner a {
+  color: #a78bfa; text-decoration: none; font-size: .7rem;
+  padding: 3px 10px; border-radius: 4px; border: 1px solid #7c3aed44;
+  transition: background .15s;
+}
+.demo-banner a:hover { background: #7c3aed22; }
 
-header{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.9);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);padding:0 2rem;height:56px;
-  display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;
-  background:linear-gradient(135deg,#e2e8f0,var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hright{display:flex;gap:.75rem;align-items:center}
-.hbadge{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--muted);padding:.25rem .75rem;border-radius:20px;border:1px solid var(--border)}
-.weekly-badge{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--accent);background:var(--cyan-d);border:1px solid rgba(6,182,212,.2);
-  padding:.25rem .75rem;border-radius:20px}
+/* ── Header ── */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 37px; z-index: 100;
+}
+.hdr-left h1 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--text);
+}
+.hdr-left h1 span { color: var(--accent); }
+.hdr-meta {
+  font-size: .72rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.hdr-badge {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent)44;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--accent)0d;
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-main{max-width:1100px;margin:0 auto;padding:2rem}
+/* ── KPI row ── */
+.kpis {
+  display: flex;
+  gap: 12px;
+  padding: 20px 32px;
+  flex-wrap: wrap;
+}
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  flex: 1;
+  min-width: 130px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.kpi:hover { border-color: var(--accent)55; }
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: .4;
+}
+.kv {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.kl {
+  font-size: .68rem;
+  color: var(--muted);
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 500;
+}
+.ksub {
+  font-size: .68rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
 
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(6,182,212,.05),transparent 60%)}
-.kpi-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.kpi-val{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;line-height:1}
-.kpi-val.cyan{color:var(--accent)} .kpi-val.green{color:var(--green)} .kpi-val.amber{color:var(--amber)} .kpi-val.red{color:var(--red)}
-.kpi-sub{font-size:.7rem;color:var(--muted);margin-top:.35rem}
+/* ── Layout ── */
+.wrap  { padding: 0 32px 40px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 
-/* CAPACITY BAR */
-.cap-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:2rem}
-.cap-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:1.25rem}
-.cap-row{margin-bottom:1rem}
-.cap-label-row{display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.4rem}
-.cap-label{font-weight:600}
-.cap-pct{color:var(--muted)}
-.cap-bar-bg{background:rgba(255,255,255,.06);border-radius:6px;height:10px;overflow:hidden}
-.cap-bar-fill{height:100%;border-radius:6px;transition:width .6s ease}
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 0;
+}
+.chead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ctitle {
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.ctag {
+  font-size: .65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cnote {
+  font-size: .8rem;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,.02);
+  line-height: 1.6;
+}
+.cnote b { color: var(--text); font-weight: 600; }
 
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
-@media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
-.chart-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:1rem}
-.chart-wrap{position:relative;height:220px}
+/* ── Section divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 18px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:2rem}
-.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.table-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700}
-.table-count{font-size:.7rem;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:.78rem}
-th{text-align:left;padding:.5rem .75rem;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
-td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.03)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-.pill{display:inline-block;font-size:.62rem;font-weight:700;padding:.18rem .5rem;border-radius:8px}
-.pill-green{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
-.pill-amber{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
-.pill-red{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+/* ── Badge ── */
+.badge {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid;
+  vertical-align: middle;
+  margin-left: 4px;
+}
 
-footer{text-align:center;padding:2rem;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border)}
-footer a{color:var(--accent);text-decoration:none}
+/* ── Tab bar ── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Filter row ── */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.filter-row label {
+  font-size: .68rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.filter-row select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: .72rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.filter-row select:focus { outline: 1px solid var(--accent)55; }
+.filter-count {
+  font-size: .68rem;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+/* ── Table ── */
+.tbl-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .76rem;
+}
+th {
+  text-align: left;
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+th:hover { color: var(--accent); }
+th.sorted-asc::after  { content: ' ↑'; color: var(--accent); }
+th.sorted-desc::after { content: ' ↓'; color: var(--accent); }
+td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border)66;
+  white-space: nowrap;
+}
+tr:hover td { background: rgba(255,255,255,.02); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.age-ok   { color: var(--green); }
+.age-warn { color: var(--orange); }
+.age-crit { color: var(--red); }
+
+/* ── Mini gauge (CSS) ── */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 8px;
+}
+.gauge-arc-wrap { position: relative; width: 200px; height: 110px; overflow: hidden; }
+.gauge-arc-bg, .gauge-arc-fill {
+  position: absolute; top: 0; left: 0;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 22px solid transparent;
+}
+.gauge-arc-bg   { border-top-color: #1a2740; border-right-color: #1a2740; transform: rotate(135deg); }
+.gauge-arc-fill { border-top-color: var(--red); border-right-color: var(--red); transform: rotate(135deg); transition: transform 1s ease; }
+.gauge-val { font-size: 2.8rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.gauge-label { font-size: .72rem; color: var(--muted); text-align: center; }
+.gauge-delta { font-size: .78rem; color: var(--red); font-weight: 600; }
+.gauge-target { font-size: .68rem; color: var(--muted); }
+
+/* ── Progress bar ── */
+.prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.prog-label { font-size: .72rem; color: var(--text); min-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prog-bar-wrap { flex: 1; background: var(--border); border-radius: 3px; height: 6px; }
+.prog-bar { height: 6px; border-radius: 3px; transition: width 0.8s ease; }
+.prog-val { font-size: .68rem; color: var(--muted); min-width: 50px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── Chart containers ── */
+.chart-box { position: relative; }
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 20px 32px;
+  border-top: 1px solid var(--border);
+  font-size: .68rem;
+  color: var(--muted);
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.footer a { color: var(--muted); text-decoration: none; }
+.footer a:hover { color: var(--accent); }
+
+@media (max-width: 900px) {
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .kpis { padding: 16px; }
+  .wrap  { padding: 0 16px 32px; }
+  .hdr   { padding: 14px 16px; flex-direction: column; align-items: flex-start; gap: 8px; top: 33px; }
+  .demo-banner { padding: 8px 16px; flex-direction: column; gap: 6px; align-items: flex-start; }
+}
 </style>
 </head>
 <body>
 
+<!-- Demo Banner -->
 <div class="demo-banner">
-  ⬡ Demo Mode — All data is fictional and for portfolio showcase only &nbsp;·&nbsp;
-  <a href="../../index.html">← Back to Hub</a>
+  <div class="demo-left">
+    <span class="demo-badge">&#x2B21; Demo Mode</span>
+    <span>All data is fictional &mdash; for portfolio illustration only</span>
+  </div>
+  <a href="../../index.html">&larr; Back to Hub</a>
 </div>
 
-<header>
-  <div class="logo">Manual Storage Dashboard</div>
-  <div class="hright">
-    <div class="weekly-badge">Weekly Update</div>
-    <div class="hbadge">Verizon Ops · Demo</div>
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-left">
+    <h1>Verizon Ops &mdash; <span>Manual Storage</span> Dashboard</h1>
+    <div class="hdr-meta">Generated 2026-07-10 09:00 &nbsp;&middot;&nbsp; Facility C &nbsp;&middot;&nbsp; Demo Data</div>
   </div>
-</header>
-
-<main>
-
-  <div class="kpi-row">
-    <div class="kpi">
-      <div class="kpi-label">Total SKUs</div>
-      <div class="kpi-val cyan">1,284</div>
-      <div class="kpi-sub">In manual storage</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Total Units</div>
-      <div class="kpi-val cyan">28,451</div>
-      <div class="kpi-sub">Across all locations</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Capacity Used</div>
-      <div class="kpi-val amber">73%</div>
-      <div class="kpi-sub">Of total floor capacity</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Aged >90 Days</div>
-      <div class="kpi-val red">312</div>
-      <div class="kpi-sub">SKUs needing disposition</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">New This Week</div>
-      <div class="kpi-val green">847</div>
-      <div class="kpi-sub">Units added</div>
-    </div>
+  <div class="hdr-right">
+    <span class="hdr-badge">Live Dashboard</span>
   </div>
+</div>
 
-  <!-- CAPACITY BARS -->
-  <div class="cap-card">
-    <div class="cap-title">Zone Capacity Utilization</div>
-    <div class="cap-row">
-      <div class="cap-label-row"><span class="cap-label">Zone A — Chargers & Cables</span><span class="cap-pct">81%</span></div>
-      <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:81%;background:linear-gradient(90deg,#ef4444,#f59e0b)"></div></div>
-    </div>
-    <div class="cap-row">
-      <div class="cap-label-row"><span class="cap-label">Zone B — Cases & Screen Protectors</span><span class="cap-pct">67%</span></div>
-      <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:67%;background:linear-gradient(90deg,#06b6d4,#3b82f6)"></div></div>
-    </div>
-    <div class="cap-row">
-      <div class="cap-label-row"><span class="cap-label">Zone C — Earbuds & Audio</span><span class="cap-pct">74%</span></div>
-      <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:74%;background:linear-gradient(90deg,#f59e0b,#eab308)"></div></div>
-    </div>
-    <div class="cap-row">
-      <div class="cap-label-row"><span class="cap-label">Zone D — Mixed / Overflow</span><span class="cap-pct">58%</span></div>
-      <div class="cap-bar-bg"><div class="cap-bar-fill" style="width:58%;background:linear-gradient(90deg,#10b981,#06b6d4)"></div></div>
-    </div>
-  </div>
+<!-- KPI Row -->
+<div class="kpis">
+  <div class="kpi" style="color:#22d3ee"><div class="kv" style="color:#22d3ee">48,374</div><div class="kl">Total Units</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">71.2%</div><div class="kl">Capacity (Target 65%)</div><div class="ksub">4,712 units to clear</div></div>
+  <div class="kpi" style="color:#64748b"><div class="kv" style="color:#64748b">67,920</div><div class="kl">Total Slots</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv" style="color:#f97316">127d</div><div class="kl">Avg Days in Storage</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">6,481</div><div class="kl">Items 365+ Days</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv" style="color:#ef4444">7,903</div><div class="kl">Repair &gt;90d</div><div class="ksub">Action needed</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv" style="color:#f97316">412</div><div class="kl">RT / IQ Concession</div><div class="ksub">397 units &gt;90d (96%)</div></div>
+</div>
 
-  <div class="charts-grid">
-    <div class="chart-card">
-      <div class="chart-title">Weekly Inventory Trend (Units)</div>
-      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+<!-- Main content -->
+<div class="wrap">
+
+  <!-- Row: Gauge + Pies -->
+  <div class="grid3">
+
+    <!-- Capacity Gauge -->
+    <div class="card">
+      <div class="chead"><span class="ctitle">Capacity Gauge</span></div>
+      <div class="gauge-wrap">
+        <div style="font-size:3.2rem;font-weight:700;color:#ef4444;font-variant-numeric:tabular-nums;line-height:1;">71.2%</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:4px;">Warehouse Capacity</div>
+        <div style="font-size:.72rem;color:var(--red);font-weight:600;margin-top:4px;">&#9650; +6.2% above target</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">Target: 65%</div>
+        <canvas id="gaugeChart" width="240" height="130" style="margin-top:12px;"></canvas>
+      </div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">Disposition Breakdown</div>
-      <div class="chart-wrap"><canvas id="dispositionChart"></canvas></div>
+
+    <!-- Category Donut -->
+    <div class="card">
+      <div class="chead"><span class="ctitle">Product Category</span></div>
+      <div class="chart-box" style="height:300px;position:relative;">
+        <canvas id="categoryDonut"></canvas>
+      </div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">Age Distribution (Days in Storage)</div>
-      <div class="chart-wrap"><canvas id="ageChart"></canvas></div>
+
+    <!-- Model Class Donut -->
+    <div class="card">
+      <div class="chead"><span class="ctitle">Model Class</span></div>
+      <div class="chart-box" style="height:300px;position:relative;">
+        <canvas id="modelClassDonut"></canvas>
+      </div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">Top Categories by Unit Count</div>
-      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
-    </div>
+
   </div>
 
-  <div class="table-card">
-    <div class="table-header">
-      <div class="table-title">SKUs Requiring Attention (Aged >90 Days)</div>
-      <div class="table-count">Showing 10 of 312</div>
-    </div>
-    <table>
-      <thead>
-        <tr><th>SKU</th><th>Category</th><th>Units</th><th>Days Stored</th><th>Zone</th><th>Action</th></tr>
-      </thead>
-      <tbody id="skuTable"></tbody>
-    </table>
+  <!-- Disposition x Age Heatmap-style bar -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chead"><span class="ctitle">Disposition Category &times; Age Range</span></div>
+    <div class="cnote"><b>Age buckets:</b> &lt;30d, 30-90d, 91-180d, 181-365d, 365d+. Each bar shows unit count per disposition group.</div>
+    <canvas id="dispositionAge" height="90"></canvas>
   </div>
 
-</main>
+  <!-- Top SKUs bar -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chead">
+      <span class="ctitle">Top 15 SKUs &mdash; All Inventory (48,374 units)</span>
+      <span class="ctag" style="background:#22d3ee22;color:#22d3ee;border:1px solid #22d3ee44;">All Disp.</span>
+    </div>
+    <canvas id="topSkusBar" height="80"></canvas>
+  </div>
 
-<footer>
-  <a href="../../index.html">← Portfolio Hub</a> &nbsp;·&nbsp; Brian YT SHIN &nbsp;·&nbsp; Demo Data Only
-</footer>
+  <!-- ── Per-Category Deep Dive ── -->
+  <div class="divider">Per-Category Deep Dive &mdash; Top 15 SKUs &times; Age</div>
+
+  <!-- Tab bar for disposition categories -->
+  <div class="tab-bar" id="dispTabBar">
+    <button class="tab-btn active" data-tab="repair">Repair</button>
+    <button class="tab-btn" data-tab="clnr">CLNR (Sellable)</button>
+    <button class="tab-btn" data-tab="fwd">Fwd. Undeliverable</button>
+    <button class="tab-btn" data-tab="new">New</button>
+    <button class="tab-btn" data-tab="bidsale">Bid Sale</button>
+    <button class="tab-btn" data-tab="shred">Shred</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-repair">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Repair Disposition &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="repairBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-clnr">
+    <div class="card">
+      <div class="chead"><span class="ctitle">CLNR (Sellable) &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="clnrBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-fwd">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Forward Undeliverable &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="fwdBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-new">
+    <div class="card">
+      <div class="chead"><span class="ctitle">New &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="newBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-bidsale">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Bid Sale ABC &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="bidsaleBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-shred">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Shred &mdash; Top 15 SKUs by Age</span></div>
+      <canvas id="shredBar" height="80"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Internet Devices ── -->
+  <div class="divider">Internet Devices &mdash; Gateway / 4G / 5G / LTE</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Internet Devices &mdash; 6,840 units total</span></div>
+      <canvas id="internetBar" height="100"></canvas>
+    </div>
+    <div class="card">
+      <div class="chead"><span class="ctitle">Top Locations &mdash; Internet Devices</span></div>
+      <div id="internetLocTable" class="tbl-wrap"></div>
+    </div>
+  </div>
+
+  <!-- ── Tablets ── -->
+  <div class="divider">Tablets &mdash; Devices with "Tab" in Model Name</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="chead"><span class="ctitle">Tablets &mdash; 29,814 units total</span></div>
+      <canvas id="tabletsBar" height="100"></canvas>
+    </div>
+    <div class="card">
+      <div class="chead"><span class="ctitle">Top Locations &mdash; Tablets</span></div>
+      <div id="tabletsLocTable" class="tbl-wrap"></div>
+    </div>
+  </div>
+
+  <!-- ── Concession & Long-Aging ── -->
+  <div class="divider">Concession Devices &amp; Long-Aging Analysis</div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="chead"><span class="ctitle">RT / IQ Concession Devices &mdash; 412 units total</span></div>
+      <canvas id="concessionBar" height="120"></canvas>
+    </div>
+    <div class="card">
+      <div class="chead"><span class="ctitle">Items 365+ Days &mdash; by Disposition (6,481 units)</span></div>
+      <canvas id="aging365Donut"></canvas>
+    </div>
+  </div>
+
+  <!-- Long-aging SKU table -->
+  <div class="card" style="margin-top:16px;">
+    <div class="chead">
+      <span class="ctitle">Top 15 SKUs with 365+ Days in Storage</span>
+      <span class="ctag" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444;">Action Required</span>
+    </div>
+    <div class="filter-row">
+      <label>Disposition</label>
+      <select id="agingDispFilter">
+        <option value="">All</option>
+        <option>Repair</option>
+        <option>CLNR</option>
+        <option>Fwd. Undeliverable</option>
+        <option>New</option>
+        <option>Bid Sale</option>
+        <option>Shred</option>
+      </select>
+      <label style="margin-left:10px;">Location Zone</label>
+      <select id="agingZoneFilter">
+        <option value="">All Zones</option>
+        <option>Zone A</option>
+        <option>Zone B</option>
+        <option>Zone C</option>
+        <option>Zone D</option>
+      </select>
+      <span class="filter-count" id="agingCount">Showing 15 of 15 SKUs</span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="agingTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable('agingTable',0)">SKU</th>
+            <th onclick="sortTable('agingTable',1)">Description</th>
+            <th onclick="sortTable('agingTable',2)">Disposition</th>
+            <th onclick="sortTable('agingTable',3)">Location</th>
+            <th onclick="sortTable('agingTable',4)" class="num">Units</th>
+            <th onclick="sortTable('agingTable',5)" class="num">Avg Days</th>
+            <th onclick="sortTable('agingTable',6)" class="num">Max Days</th>
+            <th onclick="sortTable('agingTable',7)">Age Flag</th>
+          </tr>
+        </thead>
+        <tbody id="agingTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- All inventory sortable table -->
+  <div class="divider">Full Inventory Detail &mdash; All SKUs</div>
+  <div class="card">
+    <div class="chead">
+      <span class="ctitle">All Storage Locations &mdash; Inventory Detail</span>
+      <span class="ctag" style="background:#3b82f622;color:#3b82f6;border:1px solid #3b82f644;">Sortable</span>
+    </div>
+    <div class="filter-row">
+      <label>Disposition</label>
+      <select id="allDispFilter">
+        <option value="">All</option>
+        <option>Repair</option>
+        <option>CLNR</option>
+        <option>Fwd. Undeliverable</option>
+        <option>New</option>
+        <option>Bid Sale</option>
+        <option>Shred</option>
+        <option>Concession</option>
+      </select>
+      <label style="margin-left:10px;">Zone</label>
+      <select id="allZoneFilter">
+        <option value="">All</option>
+        <option>Zone A</option>
+        <option>Zone B</option>
+        <option>Zone C</option>
+        <option>Zone D</option>
+      </select>
+      <span class="filter-count" id="allCount">Showing 30 of 30 rows</span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="allTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable('allTable',0)">SKU</th>
+            <th onclick="sortTable('allTable',1)">Description</th>
+            <th onclick="sortTable('allTable',2)">Disposition</th>
+            <th onclick="sortTable('allTable',3)">Location</th>
+            <th onclick="sortTable('allTable',4)" class="num">Units</th>
+            <th onclick="sortTable('allTable',5)" class="num">Days in Storage</th>
+            <th onclick="sortTable('allTable',6)">Age Status</th>
+          </tr>
+        </thead>
+        <tbody id="allTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- Footer -->
+<div class="footer">
+  <a href="../../index.html">&larr; Portfolio Hub</a>
+  <span>Brian YT SHIN &nbsp;&middot;&nbsp; Demo Data Only</span>
+  <span>Manual Storage Dashboard &mdash; Demo</span>
+</div>
 
 <script>
-const C = {color:'#64748b',font:{size:10}};
-const gc = 'rgba(255,255,255,.04)';
+/* ═══════════════════════════════════════════
+   DUMMY DATA DEFINITIONS
+═══════════════════════════════════════════ */
 
-new Chart(document.getElementById('trendChart'),{
-  type:'line',
-  data:{
-    labels:['Jun 2','Jun 9','Jun 16','Jun 23','Jun 30','Jul 7'],
-    datasets:[
-      {label:'Total Units',data:[24800,26200,27100,28900,27800,28451],
-        borderColor:'#06b6d4',backgroundColor:'rgba(6,182,212,.1)',tension:.4,fill:true}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:'#64748b',font:{size:11}}}},
-    scales:{x:{ticks:C,grid:{color:gc}},y:{ticks:C,grid:{color:gc}}}}
-});
-
-new Chart(document.getElementById('dispositionChart'),{
-  type:'doughnut',
-  data:{
-    labels:['Active','Pending Review','Aged >90d','On Hold'],
-    datasets:[{data:[18200,5420,3120,1711],
-      backgroundColor:['rgba(16,185,129,.7)','rgba(6,182,212,.7)','rgba(239,68,68,.7)','rgba(245,158,11,.7)'],
-      borderWidth:1}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:11}}}}}
-});
-
-new Chart(document.getElementById('ageChart'),{
-  type:'bar',
-  data:{
-    labels:['0–30d','31–60d','61–90d','91–120d','120d+'],
-    datasets:[{label:'SKUs',data:[580,340,252,178,134],
-      backgroundColor:['rgba(16,185,129,.7)','rgba(6,182,212,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.6)','rgba(239,68,68,.85)'],
-      borderRadius:4}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{x:{ticks:C,grid:{color:gc}},y:{ticks:C,grid:{color:gc}}}}
-});
-
-new Chart(document.getElementById('categoryChart'),{
-  type:'bar',
-  data:{
-    labels:['Chargers','Cases','Cables','Earbuds','Screen Prot.','Other'],
-    datasets:[{label:'Units',data:[7200,5800,4900,4100,3600,2851],
-      backgroundColor:'rgba(139,92,246,.65)',borderRadius:4}]
-  },
-  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    plugins:{legend:{display:false}},
-    scales:{x:{ticks:C,grid:{color:gc}},y:{ticks:C,grid:{color:gc}}}}
-});
-
-const skus = [
-  ['STR-00182','Chargers',84,124,'Zone A'],
-  ['STR-00291','Cables',47,118,'Zone A'],
-  ['STR-00094','Cases',102,115,'Zone B'],
-  ['STR-00337','Earbuds',31,112,'Zone C'],
-  ['STR-00148','Screen Protectors',66,108,'Zone B'],
-  ['STR-00215','Chargers',53,103,'Zone A'],
-  ['STR-00072','Mixed',28,99,'Zone D'],
-  ['STR-00419','Cases',75,97,'Zone B'],
-  ['STR-00266','Cables',44,95,'Zone A'],
-  ['STR-00133','Audio',19,92,'Zone C'],
+const SKUS = [
+  'STR-10284','STR-10391','STR-10472','STR-10583','STR-10617',
+  'STR-11042','STR-11198','STR-11304','STR-11467','STR-11589',
+  'STR-12004','STR-12138','STR-12255','STR-12381','STR-12490',
+  'STR-13011','STR-13147','STR-13288','STR-13396','STR-13502',
+  'STR-14018','STR-14134','STR-14247','STR-14359','STR-14461',
+  'STR-15003','STR-15119','STR-15238','STR-15344','STR-15456'
 ];
-const ageClass = d => d > 110 ? 'pill-red' : d > 95 ? 'pill-amber' : 'pill-amber';
-const tb = document.getElementById('skuTable');
-skus.forEach(r => {
-  tb.innerHTML += `<tr>
-    <td style="font-family:monospace">${r[0]}</td>
-    <td>${r[1]}</td>
-    <td style="font-weight:600">${r[2]}</td>
-    <td><span class="pill ${ageClass(r[3])}">${r[3]}d</span></td>
-    <td style="color:var(--muted)">${r[4]}</td>
-    <td><span class="pill pill-amber">Review</span></td>
-  </tr>`;
+
+const DESCRIPTIONS = [
+  'Smartphone 6.1"','Smartphone 6.7"','Tablet 10.5"','Gateway 5G','LTE Router',
+  'Smartphone 5.9"','Tablet 8.4"','4G Router','Smartphone 6.4"','Tablet 11"',
+  'Smartphone 6.2"','Gateway 4G','LTE Modem','Smartphone 6.5"','Tablet 9.7"',
+  'Smartphone 6.8"','5G Gateway','Smartphone 6.0"','Tablet 10"','LTE Hub',
+  'Smartphone 6.3"','Tablet 8.7"','Gateway LTE','Smartphone 5.8"','Tablet 12"',
+  'Smartphone 6.6"','4G Gateway','Smartphone 6.9"','Tablet 10.2"','5G Modem'
+];
+
+const DISPS = ['Repair','CLNR','Fwd. Undeliverable','New','Bid Sale','Shred','Concession'];
+const ZONES = ['Zone A','Zone B','Zone C','Zone D'];
+const LOC_PREFIXES = ['LOC-A','LOC-B','LOC-C','LOC-D'];
+
+function randLoc(zone) {
+  const z = zone || ZONES[Math.floor(Math.random()*4)];
+  const pfx = LOC_PREFIXES[ZONES.indexOf(z)];
+  const row = String(Math.floor(Math.random()*12)+1).padStart(2,'0');
+  const bay = String(Math.floor(Math.random()*8)+1).padStart(2,'0');
+  return pfx + row + '-' + bay;
+}
+
+const allRows = SKUS.map((sku,i) => {
+  const days = Math.floor(Math.random()*700)+5;
+  const disp = DISPS[i % DISPS.length];
+  const zone = ZONES[i % 4];
+  return {
+    sku, desc: DESCRIPTIONS[i], disp, zone,
+    loc: randLoc(zone),
+    units: Math.floor(Math.random()*3200)+80,
+    days
+  };
+});
+
+const agingRows = allRows.filter(r=>r.days>=365).concat(
+  allRows.filter(r=>r.days<365).slice(0,Math.max(0,15-allRows.filter(r=>r.days>=365).length))
+).slice(0,15).map(r=>({...r, avgDays: r.days, maxDays: r.days + Math.floor(Math.random()*80)}));
+
+/* ═══════════════════════════════════════════
+   CHART.JS DEFAULTS
+═══════════════════════════════════════════ */
+Chart.defaults.color = '#64748b';
+Chart.defaults.font.family = "Inter, 'Segoe UI', Arial, sans-serif";
+Chart.defaults.font.size = 11;
+
+const PALETTE = ['#22d3ee','#3b82f6','#8b5cf6','#10b981','#f97316','#ef4444','#f59e0b','#06b6d4','#84cc16','#ec4899'];
+
+function darkLayout(extra) {
+  return Object.assign({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#64748b', font: { size: 11 }, boxWidth: 12 } },
+      tooltip: {
+        backgroundColor: '#1a2740',
+        borderColor: '#22d3ee',
+        borderWidth: 1,
+        titleColor: '#e2e8f0',
+        bodyColor: '#94a3b8'
+      }
+    }
+  }, extra || {});
+}
+
+function darkScales(xLabel, yLabel) {
+  return {
+    x: {
+      ticks: { color: '#64748b', maxRotation: 45 },
+      grid: { color: '#1a2740' },
+      title: xLabel ? { display: true, text: xLabel, color: '#64748b' } : { display: false }
+    },
+    y: {
+      ticks: { color: '#64748b' },
+      grid: { color: '#1a2740' },
+      title: yLabel ? { display: true, text: yLabel, color: '#64748b' } : { display: false }
+    }
+  };
+}
+
+/* ── Gauge donut (canvas) ── */
+(function() {
+  const ctx = document.getElementById('gaugeChart').getContext('2d');
+  const val = 71.2;
+  const angle = (val / 100) * Math.PI;
+  const cx = 120, cy = 120, r = 80, lw = 20;
+  // BG arc
+  ctx.beginPath(); ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
+  ctx.lineWidth=lw; ctx.strokeStyle='#1a2740'; ctx.stroke();
+  // Fill arc
+  ctx.beginPath(); ctx.arc(cx,cy,r,Math.PI,Math.PI+angle);
+  ctx.lineWidth=lw; ctx.strokeStyle='#ef4444'; ctx.stroke();
+  // Target line at 65%
+  const tAngle = Math.PI + (0.65 * Math.PI);
+  const ix = cx + (r+lw/2+2)*Math.cos(tAngle), iy = cy + (r+lw/2+2)*Math.sin(tAngle);
+  const ox = cx + (r-lw/2-2)*Math.cos(tAngle), oy = cy + (r-lw/2-2)*Math.sin(tAngle);
+  ctx.beginPath(); ctx.moveTo(ix,iy); ctx.lineTo(ox,oy);
+  ctx.lineWidth=3; ctx.strokeStyle='#22d3ee'; ctx.stroke();
+})();
+
+/* ── Category Donut ── */
+new Chart(document.getElementById('categoryDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Smartphones','Tablets','Gateways/Routers','Other'],
+    datasets: [{
+      data: [21840, 14930, 8460, 3144],
+      backgroundColor: PALETTE.slice(0,4),
+      borderColor: '#0d1525',
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: darkLayout({ cutout: '55%', plugins: { legend: { position: 'bottom', labels: { color: '#64748b' } } } })
+});
+
+/* ── Model Class Donut ── */
+new Chart(document.getElementById('modelClassDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Standard','Plus/Pro','Lite/E','Enterprise','Other'],
+    datasets: [{
+      data: [18420, 12310, 8840, 5260, 3544],
+      backgroundColor: [PALETTE[2],PALETTE[0],PALETTE[3],PALETTE[4],PALETTE[5]],
+      borderColor: '#0d1525',
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: darkLayout({ cutout: '55%', plugins: { legend: { position: 'bottom', labels: { color: '#64748b' } } } })
+});
+
+/* ── Disposition x Age grouped bar ── */
+(function() {
+  const disps = ['Repair','CLNR','Fwd. Undeliv.','New','Bid Sale','Shred'];
+  const buckets = ['<30d','30–90d','91–180d','181–365d','365d+'];
+  const data = [
+    [1840, 2310, 3120, 2680, 3210],
+    [920,  1440, 1890, 1320, 1740],
+    [310,  640,  880,  760,  1100],
+    [480,  580,  340,  210,  90],
+    [210,  390,  520,  410,  540],
+    [140,  270,  380,  290,  440],
+  ];
+  new Chart(document.getElementById('dispositionAge'), {
+    type: 'bar',
+    data: {
+      labels: disps,
+      datasets: buckets.map((b,i) => ({
+        label: b,
+        data: data.map(row => row[i]),
+        backgroundColor: PALETTE[i] + 'cc'
+      }))
+    },
+    options: darkLayout({ scales: darkScales(null,'Units'), plugins: { legend: { position: 'top' } } })
+  });
+})();
+
+/* ── Top 15 SKUs horizontal bar ── */
+(function() {
+  const labels = SKUS.slice(0,15);
+  const vals   = [3180,2940,2610,2480,2310,2180,2040,1920,1810,1740,1680,1560,1430,1310,1210];
+  new Chart(document.getElementById('topSkusBar'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Units', data: vals, backgroundColor: '#22d3eeaa', borderRadius: 3 }]
+    },
+    options: darkLayout({ indexAxis: 'y', scales: { x: { ticks:{color:'#64748b'}, grid:{color:'#1a2740'} }, y: { ticks:{color:'#64748b',font:{size:10}}, grid:{color:'#1a2740'} } } })
+  });
+})();
+
+/* ── Per-disposition stacked horizontal bars (shared generator) ── */
+function makeDispBar(canvasId, dispLabel) {
+  const skuLabels = SKUS.slice(0,15);
+  const buckets = ['<30d','31–90d','91–180d','181–365d','365d+'];
+  const colors  = ['#10b98188','#22d3ee88','#f97316aa','#ef4444aa','#8b5cf6cc'];
+  const seed = dispLabel.charCodeAt(0);
+  const datasets = buckets.map((b,i) => ({
+    label: b,
+    data: skuLabels.map((_,j) => Math.floor(((seed*(j+1)*(i+1))%7)*120 + 40)),
+    backgroundColor: colors[i]
+  }));
+  new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: { labels: skuLabels, datasets },
+    options: darkLayout({
+      indexAxis: 'y',
+      scales: {
+        x: { stacked: true, ticks:{color:'#64748b'}, grid:{color:'#1a2740'} },
+        y: { stacked: true, ticks:{color:'#64748b',font:{size:10}}, grid:{color:'#1a2740'} }
+      }
+    })
+  });
+}
+
+makeDispBar('repairBar',  'Repair');
+makeDispBar('clnrBar',    'CLNR');
+makeDispBar('fwdBar',     'Fwd');
+makeDispBar('newBar',     'New');
+makeDispBar('bidsaleBar', 'Bid');
+makeDispBar('shredBar',   'Shred');
+
+/* ── Internet Devices bar ── */
+(function() {
+  const skus = SKUS.slice(0,8);
+  const vals = [1820,1340,980,720,580,440,360,600];
+  new Chart(document.getElementById('internetBar'), {
+    type: 'bar',
+    data: {
+      labels: skus,
+      datasets: [{ label:'Units', data:vals, backgroundColor:'#3b82f6aa', borderRadius:3 }]
+    },
+    options: darkLayout({ indexAxis:'y', scales: { x:{ticks:{color:'#64748b'},grid:{color:'#1a2740'}}, y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1a2740'}} } })
+  });
+})();
+
+/* ── Tablets bar ── */
+(function() {
+  const skus = SKUS.slice(2,10).concat(SKUS.slice(12,19));
+  const vals = [3810,2940,2480,1960,1740,1530,1320,1180,1040,920,840,760,680,610,550];
+  new Chart(document.getElementById('tabletsBar'), {
+    type: 'bar',
+    data: {
+      labels: skus,
+      datasets: [{ label:'Units', data:vals.slice(0,skus.length), backgroundColor:'#8b5cf6aa', borderRadius:3 }]
+    },
+    options: darkLayout({ indexAxis:'y', scales: { x:{ticks:{color:'#64748b'},grid:{color:'#1a2740'}}, y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1a2740'}} } })
+  });
+})();
+
+/* ── Concession bar ── */
+(function() {
+  const skus = SKUS.slice(0,6);
+  const vals = [112,84,68,52,41,55];
+  new Chart(document.getElementById('concessionBar'), {
+    type: 'bar',
+    data: {
+      labels: skus,
+      datasets: [{ label:'Units', data:vals, backgroundColor:'#f9731688', borderRadius:3 }]
+    },
+    options: darkLayout({ indexAxis:'y', scales: { x:{ticks:{color:'#64748b'},grid:{color:'#1a2740'}}, y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1a2740'}} } })
+  });
+})();
+
+/* ── 365+ Aging donut ── */
+new Chart(document.getElementById('aging365Donut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Repair','Fwd. Undeliv.','CLNR','Bid Sale','Shred','Other'],
+    datasets: [{
+      data: [2840,1620,980,540,361,136],
+      backgroundColor: PALETTE.slice(0,6),
+      borderColor: '#0d1525',
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: darkLayout({ cutout:'52%', plugins:{ legend:{ position:'right', labels:{color:'#64748b',font:{size:11}} } } })
+});
+
+/* ═══════════════════════════════════════════
+   TABLE BUILDERS
+═══════════════════════════════════════════ */
+
+function ageClass(d) {
+  if (d >= 365) return 'age-crit';
+  if (d >= 90)  return 'age-warn';
+  return 'age-ok';
+}
+
+function buildAgingTable(filterDisp, filterZone) {
+  const tbody = document.getElementById('agingTbody');
+  const rows = agingRows.filter(r =>
+    (!filterDisp || r.disp === filterDisp) &&
+    (!filterZone || r.zone === filterZone)
+  );
+  document.getElementById('agingCount').textContent = 'Showing ' + rows.length + ' of ' + agingRows.length + ' SKUs';
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><code style="font-size:.72rem;color:#22d3ee;">${r.sku}</code></td>
+      <td>${r.desc}</td>
+      <td>${r.disp}</td>
+      <td><code style="font-size:.7rem;color:#94a3b8;">${r.loc}</code></td>
+      <td class="num">${r.units.toLocaleString()}</td>
+      <td class="num ${ageClass(r.avgDays)}">${r.avgDays}d</td>
+      <td class="num ${ageClass(r.maxDays)}">${r.maxDays}d</td>
+      <td><span class="badge ${r.avgDays>=365?'age-crit':r.avgDays>=180?'age-warn':'age-ok'}" style="border-color:currentColor;">${r.avgDays>=365?'Critical':r.avgDays>=180?'Warning':'Review'}</span></td>
+    </tr>`).join('');
+}
+
+function buildAllTable(filterDisp, filterZone) {
+  const tbody = document.getElementById('allTbody');
+  const rows = allRows.filter(r =>
+    (!filterDisp || r.disp === filterDisp) &&
+    (!filterZone || r.zone === filterZone)
+  );
+  document.getElementById('allCount').textContent = 'Showing ' + rows.length + ' of ' + allRows.length + ' rows';
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><code style="font-size:.72rem;color:#22d3ee;">${r.sku}</code></td>
+      <td>${r.desc}</td>
+      <td>${r.disp}</td>
+      <td><code style="font-size:.7rem;color:#94a3b8;">${r.loc}</code></td>
+      <td class="num">${r.units.toLocaleString()}</td>
+      <td class="num ${ageClass(r.days)}">${r.days}d</td>
+      <td><span class="badge ${ageClass(r.days)}" style="border-color:currentColor;">${r.days>=365?'Critical':r.days>=90?'Warning':'OK'}</span></td>
+    </tr>`).join('');
+}
+
+function buildLocTable(containerId, rows) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = `<table><thead><tr><th>Location</th><th>Zone</th><th class="num">Units</th><th class="num">Avg Days</th></tr></thead><tbody>${
+    rows.map(r=>`<tr><td><code style="font-size:.7rem;color:#94a3b8;">${r.loc}</code></td><td>${r.zone}</td><td class="num">${r.units.toLocaleString()}</td><td class="num ${ageClass(r.days)}">${r.days}d</td></tr>`).join('')
+  }</tbody></table>`;
+}
+
+// Internet device location rows
+const internetLocs = [
+  {loc:'LOC-A03-02',zone:'Zone A',units:412,days:184},
+  {loc:'LOC-A04-07',zone:'Zone A',units:388,days:210},
+  {loc:'LOC-B01-03',zone:'Zone B',units:361,days:95},
+  {loc:'LOC-B02-05',zone:'Zone B',units:340,days:122},
+  {loc:'LOC-C01-01',zone:'Zone C',units:318,days:67},
+  {loc:'LOC-C03-04',zone:'Zone C',units:290,days:145},
+  {loc:'LOC-D02-06',zone:'Zone D',units:274,days:390},
+  {loc:'LOC-D04-02',zone:'Zone D',units:248,days:422},
+];
+
+const tabletLocs = [
+  {loc:'LOC-A01-01',zone:'Zone A',units:1840,days:142},
+  {loc:'LOC-A02-03',zone:'Zone A',units:1620,days:167},
+  {loc:'LOC-B03-01',zone:'Zone B',units:1540,days:88},
+  {loc:'LOC-B04-04',zone:'Zone B',units:1380,days:204},
+  {loc:'LOC-C02-02',zone:'Zone C',units:1240,days:310},
+  {loc:'LOC-C04-06',zone:'Zone C',units:1190,days:275},
+  {loc:'LOC-D01-03',zone:'Zone D',units:1080,days:418},
+  {loc:'LOC-D03-05',zone:'Zone D',units:960,days:391},
+];
+
+buildAgingTable('','');
+buildAllTable('','');
+buildLocTable('internetLocTable', internetLocs);
+buildLocTable('tabletsLocTable', tabletLocs);
+
+/* ── Filter listeners ── */
+document.getElementById('agingDispFilter').addEventListener('change', function() {
+  buildAgingTable(this.value, document.getElementById('agingZoneFilter').value);
+});
+document.getElementById('agingZoneFilter').addEventListener('change', function() {
+  buildAgingTable(document.getElementById('agingDispFilter').value, this.value);
+});
+document.getElementById('allDispFilter').addEventListener('change', function() {
+  buildAllTable(this.value, document.getElementById('allZoneFilter').value);
+});
+document.getElementById('allZoneFilter').addEventListener('change', function() {
+  buildAllTable(document.getElementById('allDispFilter').value, this.value);
+});
+
+/* ═══════════════════════════════════════════
+   TABLE SORT
+═══════════════════════════════════════════ */
+const sortState = {};
+function sortTable(tableId, colIdx) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = tableId + '_' + colIdx;
+  const asc = sortState[key] = !(sortState[key]);
+
+  rows.sort((a, b) => {
+    const av = a.cells[colIdx].textContent.trim().replace(/[,d%]/g,'');
+    const bv = b.cells[colIdx].textContent.trim().replace(/[,d%]/g,'');
+    const an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return asc ? an - bn : bn - an;
+    return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+
+  // Update header classes
+  const ths = table.querySelectorAll('th');
+  ths.forEach((th,i) => {
+    th.classList.remove('sorted-asc','sorted-desc');
+    if (i === colIdx) th.classList.add(asc ? 'sorted-asc' : 'sorted-desc');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   TAB BAR
+═══════════════════════════════════════════ */
+document.getElementById('dispTabBar').addEventListener('click', function(e) {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('#dispTabBar .tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
 });
 </script>
 </body>
