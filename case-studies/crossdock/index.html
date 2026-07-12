@@ -46,6 +46,8 @@
       max-width:860px;margin:0 auto 4rem;padding:0 2rem}
     .status-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;
       display:flex;align-items:center;gap:1rem}
+    .status-card.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+    .status-card.done .status-title{color:var(--green)}
     .status-icon{font-size:1.5rem;flex-shrink:0}
     .status-body{}
     .status-title{font-size:.8rem;font-weight:700;margin-bottom:.2rem}
@@ -131,21 +133,21 @@
 
 <!-- STATUS GRID -->
 <div class="status-grid">
-  <div class="status-card">
+  <div class="status-card done">
     <div class="dot-done"></div>
     <div class="status-body">
       <div class="status-title">Gmail Parsing</div>
       <div class="status-sub">Inbound email extraction</div>
     </div>
   </div>
-  <div class="status-card">
+  <div class="status-card done">
     <div class="dot-done"></div>
     <div class="status-body">
       <div class="status-title">Auto-Reply</div>
       <div class="status-sub">Templated response dispatch</div>
     </div>
   </div>
-  <div class="status-card">
+  <div class="status-card done">
     <div class="dot-done"></div>
     <div class="status-body">
       <div class="status-title">Sheet Update</div>

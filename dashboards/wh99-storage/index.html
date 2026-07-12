@@ -150,6 +150,19 @@ body {
   color: var(--muted);
   margin-top: 2px;
 }
+.kdelta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 6px;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.kdelta.good  { background: rgba(16,185,129,.12); color: #10b981; border: 1px solid rgba(16,185,129,.2); }
+.kdelta.warn  { background: rgba(239,68,68,.1);   color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+.kdelta.flat  { background: rgba(100,116,139,.1); color: #64748b; border: 1px solid rgba(100,116,139,.2); }
 
 /* ── Layout ── */
 .wrap  { padding: 0 32px 40px; }
@@ -403,13 +416,13 @@ tr:hover td { background: rgba(255,255,255,.02); }
 
 <!-- KPI Row -->
 <div class="kpis">
-  <div class="kpi" style="color:#22d3ee"><div class="kv c-cyan">48,374</div><div class="kl">Total Units</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv c-red">71.2%</div><div class="kl">Capacity (Target 65%)</div><div class="ksub">4,712 units to clear</div></div>
-  <div class="kpi" style="color:#64748b"><div class="kv c-muted">67,920</div><div class="kl">Total Slots</div></div>
-  <div class="kpi" style="color:#f97316"><div class="kv c-orange">127d</div><div class="kl">Avg Days in Storage</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv c-red">6,481</div><div class="kl">Items 365+ Days</div></div>
-  <div class="kpi" style="color:#ef4444"><div class="kv c-red">7,903</div><div class="kl">Repair &gt;90d</div><div class="ksub">Action needed</div></div>
-  <div class="kpi" style="color:#f97316"><div class="kv c-orange">412</div><div class="kl">RT / IQ Concession</div><div class="ksub">397 units &gt;90d (96%)</div></div>
+  <div class="kpi" style="color:#22d3ee"><div class="kv c-cyan">48,374</div><div class="kl">Total Units</div><div class="kdelta warn">▲ 1,203 vs last wk</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">71.2%</div><div class="kl">Capacity (Target 65%)</div><div class="ksub">4,712 units to clear</div><div class="kdelta warn">▲ 1.8% vs last wk</div></div>
+  <div class="kpi" style="color:#64748b"><div class="kv c-muted">67,920</div><div class="kl">Total Slots</div><div class="kdelta flat">— no change</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv c-orange">127d</div><div class="kl">Avg Days in Storage</div><div class="kdelta warn">▲ 4d vs last wk</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">6,481</div><div class="kl">Items 365+ Days</div><div class="kdelta warn">▲ 127 vs last wk</div></div>
+  <div class="kpi" style="color:#ef4444"><div class="kv c-red">7,903</div><div class="kl">Repair &gt;90d</div><div class="ksub">Action needed</div><div class="kdelta good">▼ 89 vs last wk</div></div>
+  <div class="kpi" style="color:#f97316"><div class="kv c-orange">412</div><div class="kl">RT / IQ Concession</div><div class="ksub">397 units &gt;90d (96%)</div><div class="kdelta warn">▲ 12 vs last wk</div></div>
 </div>
 
 <!-- Main content -->
@@ -467,56 +480,40 @@ tr:hover td { background: rgba(255,255,255,.02); }
   <!-- ── Per-Category Deep Dive ── -->
   <div class="divider">Per-Category Deep Dive &mdash; Top 15 SKUs &times; Age</div>
 
-  <!-- Tab bar for disposition categories -->
-  <div class="tab-bar" id="dispTabBar">
-    <button class="tab-btn active" data-tab="repair">Repair</button>
-    <button class="tab-btn" data-tab="clnr">CLNR (Sellable)</button>
-    <button class="tab-btn" data-tab="fwd">Fwd. Undeliverable</button>
-    <button class="tab-btn" data-tab="new">New</button>
-    <button class="tab-btn" data-tab="bidsale">Bid Sale</button>
-    <button class="tab-btn" data-tab="shred">Shred</button>
+  <!-- Repair -->
+  <div class="card">
+    <div class="chead"><span class="ctitle">Repair Disposition &mdash; Top 15 SKUs by Age</span></div>
+    <div style="position:relative;height:320px;"><canvas id="repairBar"></canvas></div>
   </div>
 
-  <div class="tab-panel active" id="tab-repair">
-    <div class="card">
-      <div class="chead"><span class="ctitle">Repair Disposition &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="repairBar"></canvas></div>
-    </div>
+  <!-- CLNR -->
+  <div class="card">
+    <div class="chead"><span class="ctitle">CLNR (Sellable) &mdash; Top 15 SKUs by Age</span></div>
+    <div style="position:relative;height:320px;"><canvas id="clnrBar"></canvas></div>
   </div>
 
-  <div class="tab-panel" id="tab-clnr">
-    <div class="card">
-      <div class="chead"><span class="ctitle">CLNR (Sellable) &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="clnrBar"></canvas></div>
-    </div>
+  <!-- Forward Undeliverable -->
+  <div class="card">
+    <div class="chead"><span class="ctitle">Forward Undeliverable &mdash; Top 15 SKUs by Age</span></div>
+    <div style="position:relative;height:320px;"><canvas id="fwdBar"></canvas></div>
   </div>
 
-  <div class="tab-panel" id="tab-fwd">
-    <div class="card">
-      <div class="chead"><span class="ctitle">Forward Undeliverable &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="fwdBar"></canvas></div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="tab-new">
+  <!-- New + Bid Sale (side by side) -->
+  <div class="grid2">
     <div class="card">
       <div class="chead"><span class="ctitle">New &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="newBar"></canvas></div>
+      <div style="position:relative;height:300px;"><canvas id="newBar"></canvas></div>
     </div>
-  </div>
-
-  <div class="tab-panel" id="tab-bidsale">
     <div class="card">
       <div class="chead"><span class="ctitle">Bid Sale ABC &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="bidsaleBar"></canvas></div>
+      <div style="position:relative;height:300px;"><canvas id="bidsaleBar"></canvas></div>
     </div>
   </div>
 
-  <div class="tab-panel" id="tab-shred">
-    <div class="card">
-      <div class="chead"><span class="ctitle">Shred &mdash; Top 15 SKUs by Age</span></div>
-      <div style="position:relative;height:320px;"><canvas id="shredBar"></canvas></div>
-    </div>
+  <!-- Shred -->
+  <div class="card">
+    <div class="chead"><span class="ctitle">Shred &mdash; Top 15 SKUs by Age</span></div>
+    <div style="position:relative;height:320px;"><canvas id="shredBar"></canvas></div>
   </div>
 
   <!-- ── Internet Devices ── -->
@@ -1063,18 +1060,6 @@ function sortTable(tableId, colIdx) {
   });
 }
 
-/* ═══════════════════════════════════════════
-   TAB BAR
-═══════════════════════════════════════════ */
-document.getElementById('dispTabBar').addEventListener('click', function(e) {
-  const btn = e.target.closest('.tab-btn');
-  if (!btn) return;
-  const tab = btn.dataset.tab;
-  document.querySelectorAll('#dispTabBar .tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-});
 </script>
 </body>
 </html>
