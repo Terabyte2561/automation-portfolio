@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brian YT SHIN — Automation & Analytics Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #07080f;
+      --card:      #0d0f1a;
+      --border:    rgba(255,255,255,.06);
+      --border-hi: rgba(6,182,212,.35);
+      --accent:    #06b6d4;
+      --cyan-d:    rgba(6,182,212,.12);
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --green:     #22c55e;
+      --amber:     #f59e0b;
+      --purple:    #8b5cf6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Disclaimer Banner ─────────────────────────── */
+    .disclaimer {
+      background: rgba(6,182,212,.08);
+      border-bottom: 1px solid rgba(6,182,212,.2);
+      padding: .6rem 2rem;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: .75rem;
+      color: var(--muted);
+      letter-spacing: .02em;
+    }
+    .disclaimer strong { color: var(--accent); font-weight: 600; }
+
+    /* ── Hero ─────────────────────────────────────── */
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(6,182,212,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6,182,212,.04) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+              mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 2.5rem;
+      height: 1px;
+      opacity: .6;
+    }
+    .hero-eyebrow::before { background: linear-gradient(90deg, transparent, var(--accent)); }
+    .hero-eyebrow::after  { background: linear-gradient(90deg, var(--accent), transparent); }
+
+    .hero h1 {
+      position: relative;
+      font-size: clamp(2rem, 5.5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -.02em;
+      background: linear-gradient(140deg, #e2e8f0 25%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+    }
+    .hero-sub {
+      position: relative;
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+    .hero-badges {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+    .hero-badge {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .hero-badge.cyan  { border-color: rgba(6,182,212,.3);  color: var(--accent); background: var(--cyan-d); }
+    .hero-badge.green { border-color: rgba(34,197,94,.3);  color: var(--green);  background: rgba(34,197,94,.08); }
+    .hero-badge.purple{ border-color: rgba(139,92,246,.3); color: var(--purple); background: rgba(139,92,246,.08); }
+
+    @keyframes bounce { 0%,100%{transform:translateY(0);} 55%{transform:translateY(7px);} }
+    .scroll-hint {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      color: var(--muted);
+      font-size: .75rem;
+      letter-spacing: .06em;
+      animation: bounce 2.2s ease-in-out infinite;
+    }
+    .scroll-hint svg { width: 18px; height: 18px; stroke: var(--accent); opacity: .7; }
+
+    /* ── Section ──────────────────────────────────── */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .section-header { margin-bottom: 3.5rem; }
+    .section-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .75rem;
+    }
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .5rem;
+    }
+    .section-desc { font-size: .875rem; color: var(--muted); }
+
+    /* ── Category groups ──────────────────────────── */
+    .cat-group { margin-bottom: 3.5rem; }
+    .cat-group:last-child { margin-bottom: 0; }
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: .875rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: .45;
+    }
+    .cat-count {
+      font-size: .7rem;
+      font-weight: 500;
+      color: var(--muted);
+      opacity: .6;
+      margin-left: auto;
+    }
+
+    /* ── Cards grid ───────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── Card ─────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .5s ease, transform .5s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 20%, rgba(6,182,212,.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .card:hover {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 0 1px rgba(6,182,212,.1), 0 20px 40px rgba(0,0,0,.4);
+      transform: translateY(-3px);
+    }
+    .card.wip { opacity: .6 !important; cursor: default; }
+    .card.wip:hover { transform: none; border-color: var(--border); box-shadow: none; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+    }
+    .card-icon { font-size: 1.6rem; }
+    .card-badge {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .25rem .65rem;
+      border-radius: 20px;
+    }
+    .badge-live   { background: rgba(34,197,94,.12);  color: var(--green);  border: 1px solid rgba(34,197,94,.25); }
+    .badge-auto   { background: rgba(6,182,212,.12);  color: var(--accent); border: 1px solid rgba(6,182,212,.25); }
+    .badge-wip    { background: rgba(245,158,11,.1);  color: var(--amber);  border: 1px solid rgba(245,158,11,.25); }
+    .badge-demo   { background: rgba(139,92,246,.12); color: var(--purple); border: 1px solid rgba(139,92,246,.25); }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin-bottom: .6rem;
+      color: var(--text);
+    }
+    .card p {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 1.1rem;
+    }
+
+    /* metric pill */
+    .card-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(34,197,94,.08);
+      border: 1px solid rgba(34,197,94,.2);
+      border-radius: 20px;
+      padding: .3rem .75rem;
+      margin-bottom: .9rem;
+    }
+    .card-metric svg { width: 11px; height: 11px; fill: var(--green); }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .9rem;
+    }
+    .tag {
+      font-size: .63rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      color: var(--muted);
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .2rem .55rem;
+    }
+    .tag.hi { border-color: rgba(6,182,212,.2); color: rgba(6,182,212,.8); background: rgba(6,182,212,.06); }
+
+    .card-meta {
+      font-size: .72rem;
+      color: var(--muted);
+      opacity: .6;
+      margin-top: auto;
+      padding-top: .75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 1rem;
+    }
+    .card-btn svg { width: 13px; height: 13px; stroke: var(--accent); transition: transform .2s; }
+    .card:hover .card-btn svg { transform: translateX(3px); }
+    .card-btn.disabled { color: var(--muted); pointer-events: none; }
+    .card-btn.disabled svg { stroke: var(--muted); }
+
+    /* divider between sections */
+    .section-divider {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .section-divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Footer ───────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: .78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .75rem;
+    }
+    footer .footer-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      opacity: .8;
+      transition: opacity .2s;
+    }
+    footer a:hover { opacity: 1; }
+    footer .footer-links { display: flex; gap: 1.5rem; align-items: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Disclaimer ───────────────────────────────── -->
+  <div class="disclaimer">
+    <strong>Notice:</strong>&nbsp; All data displayed across this portfolio is fictional and generated for demonstration purposes only.
+    No proprietary, confidential, or personally identifiable information is included. Automated jobs shown do not run in this environment.
+  </div>
+
+  <!-- ── Hero ─────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-eyebrow">Automation · Analytics · Ops Intelligence</div>
+    <h1>Brian YT SHIN<br>Portfolio</h1>
+    <p class="hero-sub">
+      Operations analyst specializing in logistics automation, data pipeline engineering,
+      and interactive analytics dashboards — built with Python, SAP scripting, and Google Apps Script.
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge cyan">Python</span>
+      <span class="hero-badge cyan">SAP GUI Scripting</span>
+      <span class="hero-badge cyan">Google Apps Script</span>
+      <span class="hero-badge green">Chart.js · Plotly</span>
+      <span class="hero-badge green">Windows Scheduler</span>
+      <span class="hero-badge purple">Logistics · Reverse Ops</span>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── Dashboards ────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">Live Dashboards</div>
+      <div class="section-title">Analytics Dashboards</div>
+      <div class="section-desc">Interactive dashboards built on Python data pipelines and Google Apps Script web apps — shown here with dummy data.</div>
+    </div>
+
+    <!-- Inventory -->
+    <div class="cat-group">
+      <div class="cat-header">
+        <span class="cat-label">Inventory</span>
+        <span class="cat-count">2 dashboards</span>
+      </div>
+      <div class="cards-grid">
+
+        <a class="card" href="dashboards/wh99-storage/index.html">
+          <div class="card-top">
+            <span class="card-icon">👷</span>
+            <span class="card-badge badge-demo">Demo</span>
+          </div>
+          <h3>Manual Storage Dashboard</h3>
+          <p>Inventory status and capacity analysis. SKU-level stacking, disposition breakdown, and historical trend — updated weekly via automated Python pipeline.</p>
+          <div class="card-tags">
+            <span class="tag hi">Python</span>
+            <span class="tag hi">Apps Script</span>
+            <span class="tag">Chart.js</span>
+            <span class="tag">Verizon Ops</span>
+          </div>
+          <div class="card-meta">Weekly · Dummy data</div>
+          <span class="card-btn">
+            View Dashboard
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="dashboards/wh41-rtv/index.html">
+          <div class="card-top">
+            <span class="card-icon">📦</span>
+            <span class="card-badge badge-demo">Demo</span>
+          </div>
+          <h3>Accessory RTV & Bid Sale Dashboard</h3>
+          <p>Accessory returns and Bid Sale overview. OEM/Model classification, disposition analysis — daily automated updates via Python + Apps Script pipeline.</p>
+          <div class="card-tags">
+            <span class="tag hi">Python</span>
+            <span class="tag hi">Apps Script</span>
+            <span class="tag">Chart.js</span>
+            <span class="tag">Verizon Ops</span>
+          </div>
+          <div class="card-meta">Daily · Dummy data</div>
+          <span class="card-btn">
+            View Dashboard
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Reconciliation -->
+    <div class="cat-group">
+      <div class="cat-header">
+        <span class="cat-label">Reconciliation</span>
+        <span class="cat-count">1 dashboard</span>
+      </div>
+      <div class="cards-grid">
+
+        <a class="card" href="dashboards/3pl-recon/index.html">
+          <div class="card-top">
+            <span class="card-icon">🔍</span>
+            <span class="card-badge badge-demo">Demo</span>
+          </div>
+          <h3>3PL Recon Dashboard</h3>
+          <p>IMEI-based inventory reconciliation tracking Missing, Mismatch, and Duplicate records across Verizon, 3PL #1, and 3PL #2. Fully automated via Windows Task Scheduler.</p>
+          <div class="card-tags">
+            <span class="tag hi">Python</span>
+            <span class="tag hi">Apps Script</span>
+            <span class="tag">Plotly</span>
+            <span class="tag hi">Windows Scheduler</span>
+          </div>
+          <div class="card-meta">Daily automated batch · Dummy data</div>
+          <span class="card-btn">
+            View Dashboard
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><hr></div>
+
+  <!-- ── Case Studies ──────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">Automation Case Studies</div>
+      <div class="section-title">Process Automation Projects</div>
+      <div class="section-desc">End-to-end automation solutions eliminating manual work, reducing error rates, and accelerating operational reporting.</div>
+    </div>
+
+    <div class="cat-group">
+      <div class="cat-header">
+        <span class="cat-label">Data & Reporting</span>
+        <span class="cat-count">2 projects</span>
+      </div>
+      <div class="cards-grid">
+
+        <a class="card" href="case-studies/lots-analysis/index.html">
+          <div class="card-top">
+            <span class="card-icon">📊</span>
+            <span class="card-badge badge-auto">Automation</span>
+          </div>
+          <h3>Lots Analysis Automation</h3>
+          <p>Automated lot reconciliation and consolidation across multiple 3PL providers. Eliminates manual Excel work with Python-driven data consolidation and Scripting Tracker integration.</p>
+          <div class="card-metric">
+            <svg viewBox="0 0 12 12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 9l-3 1.5.5-3.5L1 4.5 4.5 4z"/></svg>
+            75% time reduction · 2 hr → 30 min/day
+          </div>
+          <div class="card-tags">
+            <span class="tag hi">Python</span>
+            <span class="tag hi">Scripting Tracker</span>
+            <span class="tag">Excel Automation</span>
+            <span class="tag">openpyxl</span>
+          </div>
+          <span class="card-btn">
+            View Case Study
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="case-studies/sap-bid-fix/index.html">
+          <div class="card-top">
+            <span class="card-icon">⚙️</span>
+            <span class="card-badge badge-auto">Automation</span>
+          </div>
+          <h3>SAP Bid Sale Order Fix</h3>
+          <p>SAP GUI scripting automation to detect and correct bid sale order discrepancies — with parallel background processing across multiple warehouse sites simultaneously.</p>
+          <div class="card-metric">
+            <svg viewBox="0 0 12 12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 9l-3 1.5.5-3.5L1 4.5 4.5 4z"/></svg>
+            85% time reduction · ~2 hr saved/day
+          </div>
+          <div class="card-tags">
+            <span class="tag hi">SAP GUI Scripting</span>
+            <span class="tag hi">Scripting Tracker</span>
+            <span class="tag hi">Python</span>
+            <span class="tag">Win32API</span>
+            <span class="tag">Parallel Processing</span>
+          </div>
+          <span class="card-btn">
+            View Case Study
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="cat-group">
+      <div class="cat-header">
+        <span class="cat-label">Workflow Automation</span>
+        <span class="cat-count">2 projects</span>
+      </div>
+      <div class="cards-grid">
+
+        <a class="card" href="case-studies/acl-automation/index.html">
+          <div class="card-top">
+            <span class="card-icon">✅</span>
+            <span class="card-badge badge-auto">Automation</span>
+          </div>
+          <h3>ACL Matrix Automation</h3>
+          <p>Automated SKU validation and matrix reconciliation using Google Apps Script. Enforces business rules on each record — eliminating manual review and data entry errors.</p>
+          <div class="card-metric">
+            <svg viewBox="0 0 12 12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 9l-3 1.5.5-3.5L1 4.5 4.5 4z"/></svg>
+            Data accuracy ↑ · Validation rules enforced
+          </div>
+          <div class="card-tags">
+            <span class="tag hi">Google Apps Script</span>
+            <span class="tag hi">Python</span>
+            <span class="tag">SKU Validation</span>
+            <span class="tag">Google Sheets</span>
+          </div>
+          <span class="card-btn">
+            View Case Study
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+        <a class="card wip" href="#">
+          <div class="card-top">
+            <span class="card-icon">🚦</span>
+            <span class="card-badge badge-wip">In Progress</span>
+          </div>
+          <h3>CrossDock Automation</h3>
+          <p>End-to-end CrossDock workflow automation. Gmail parsing for inbound shipment notifications, automated reply dispatch, and real-time Google Sheets status updates.</p>
+          <div class="card-tags">
+            <span class="tag hi">Google Apps Script</span>
+            <span class="tag">Gmail API</span>
+            <span class="tag">Google Sheets</span>
+            <span class="tag">Email Automation</span>
+          </div>
+          <span class="card-btn disabled">
+            Coming Soon
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ────────────────────────────────────── -->
+  <footer>
+    <div class="footer-name">Brian YT SHIN</div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/yong-tae-brian-shin-54790593/" target="_blank" rel="noopener">
+        LinkedIn
+      </a>
+      <span style="color:var(--border);font-size:1rem;">·</span>
+      <a href="https://github.com/Terabyte2561" target="_blank" rel="noopener">
+        GitHub
+      </a>
+    </div>
+    <div>Operations Analyst · Logistics Automation · Verizon Reverse Ops</div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.card').forEach(c => observer.observe(c));
+  </script>
+
+</body>
+</html>

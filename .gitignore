@@ -1,0 +1,36 @@
+# Data files — never commit real data
+*.xlsx
+*.xls
+*.csv
+*.json
+*.txt
+
+# Python scripts — source code stays local
+*.py
+*.bat
+*.ps1
+
+# Auth / credentials
+*token*
+*secret*
+*credential*
+*.env
+.env*
+
+# Snapshots / exports / backups
+snapshots/
+data/
+exports/
+backups/
+input/
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp

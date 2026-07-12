@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Accessory RTV & Bid Sale — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#07080f;--card:#0d0f1a;--border:rgba(255,255,255,.06);
+  --accent:#06b6d4;--cyan-d:rgba(6,182,212,.12);
+  --text:#e2e8f0;--muted:#64748b;
+  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--card)} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.demo-banner{background:rgba(139,92,246,.08);border-bottom:1px solid rgba(139,92,246,.2);
+  padding:.55rem 2rem;text-align:center;font-size:.72rem;color:#a78bfa;
+  display:flex;align-items:center;justify-content:center;gap:.5rem}
+.demo-banner a{color:rgba(167,139,250,.8);text-decoration:none;font-weight:600}
+
+header{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 2rem;height:56px;
+  display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;
+  background:linear-gradient(135deg,#e2e8f0,var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hright{display:flex;gap:.75rem;align-items:center}
+.hbadge{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);padding:.25rem .75rem;border-radius:20px;border:1px solid var(--border)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-badge{font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
+  padding:.25rem .75rem;border-radius:20px;display:flex;align-items:center;gap:.4rem}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+
+.tabs{display:flex;gap:.25rem;padding:.75rem 2rem;border-bottom:1px solid var(--border);
+  background:rgba(7,8,15,.6);overflow-x:auto}
+.tab{font-size:.8rem;font-weight:600;padding:.4rem 1rem;border-radius:8px;cursor:pointer;
+  color:var(--muted);border:1px solid transparent;transition:all .2s;white-space:nowrap}
+.tab.active{color:var(--accent);background:var(--cyan-d);border-color:rgba(6,182,212,.25)}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,.04)}
+
+main{max-width:1100px;margin:0 auto;padding:2rem}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(6,182,212,.05),transparent 60%)}
+.kpi-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.kpi-val{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;line-height:1}
+.kpi-val.cyan{color:var(--accent)} .kpi-val.green{color:var(--green)} .kpi-val.amber{color:var(--amber)} .kpi-val.purple{color:var(--purple)}
+.kpi-sub{font-size:.7rem;color:var(--muted);margin-top:.35rem}
+
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+@media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+.chart-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:1rem}
+.chart-wrap{position:relative;height:220px}
+
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:2rem}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.table-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700}
+.table-count{font-size:.7rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{text-align:left;padding:.5rem .75rem;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.03)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;font-size:.62rem;font-weight:700;padding:.18rem .5rem;border-radius:8px}
+.pill-rtv{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.pill-bid{background:rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.2)}
+.pill-green{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2)}
+.pill-amber{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+
+footer{text-align:center;padding:2rem;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  ⬡ Demo Mode — All data is fictional and for portfolio showcase only &nbsp;·&nbsp;
+  <a href="../../index.html">← Back to Hub</a>
+</div>
+
+<header>
+  <div class="logo">Accessory RTV & Bid Sale</div>
+  <div class="hright">
+    <div class="live-badge"><div class="live-dot"></div>Daily Pipeline</div>
+    <div class="hbadge">Verizon Ops · Demo</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active">Overview</div>
+  <div class="tab">RTV Detail</div>
+  <div class="tab">Bid Sale</div>
+  <div class="tab">OEM Breakdown</div>
+</div>
+
+<main>
+
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Total Units (MTD)</div>
+      <div class="kpi-val cyan">3,847</div>
+      <div class="kpi-sub">Month to date</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">RTV Units</div>
+      <div class="kpi-val amber">2,104</div>
+      <div class="kpi-sub">Return to vendor</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Bid Sale Units</div>
+      <div class="kpi-val purple">1,743</div>
+      <div class="kpi-sub">Channeled to bid sale</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Processed Today</div>
+      <div class="kpi-val green">142</div>
+      <div class="kpi-sub">Jul 11 intake</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">OEM Count</div>
+      <div class="kpi-val cyan">6</div>
+      <div class="kpi-sub">Active OEMs</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Daily Intake — Last 10 Days</div>
+      <div class="chart-wrap"><canvas id="intakeChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Disposition Split</div>
+      <div class="chart-wrap"><canvas id="dispositionChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Top OEM Volume (MTD)</div>
+      <div class="chart-wrap"><canvas id="oemChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Category Breakdown</div>
+      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">Recent Intake Records</div>
+      <div class="table-count">Showing 10 of 142 today</div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>SKU</th><th>OEM</th><th>Category</th><th>Qty</th><th>Disposition</th><th>Date</th></tr>
+      </thead>
+      <tbody id="rtv-table"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <a href="../../index.html">← Portfolio Hub</a> &nbsp;·&nbsp; Brian YT SHIN &nbsp;·&nbsp; Demo Data Only
+</footer>
+
+<script>
+const C = { color:'#64748b', font:{size:10} };
+const gridColor = 'rgba(255,255,255,.04)';
+
+new Chart(document.getElementById('intakeChart'),{
+  type:'bar',
+  data:{
+    labels:['Jul 2','Jul 3','Jul 4','Jul 5','Jul 6','Jul 7','Jul 8','Jul 9','Jul 10','Jul 11'],
+    datasets:[
+      {label:'RTV',data:[98,112,87,130,105,94,118,101,109,96],backgroundColor:'rgba(245,158,11,.65)'},
+      {label:'Bid Sale',data:[72,85,68,95,88,77,102,83,91,46],backgroundColor:'rgba(139,92,246,.65)'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#64748b',font:{size:11}}}},
+    scales:{x:{stacked:true,ticks:C,grid:{color:gridColor}},y:{stacked:true,ticks:C,grid:{color:gridColor}}}
+  }
+});
+
+new Chart(document.getElementById('dispositionChart'),{
+  type:'doughnut',
+  data:{
+    labels:['RTV','Bid Sale','Hold','Scrap'],
+    datasets:[{data:[2104,1743,312,188],
+      backgroundColor:['rgba(245,158,11,.7)','rgba(139,92,246,.7)','rgba(59,130,246,.7)','rgba(239,68,68,.7)'],
+      borderWidth:1}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:11}}}}}
+});
+
+new Chart(document.getElementById('oemChart'),{
+  type:'bar',
+  data:{
+    labels:['OEM A','OEM B','OEM C','OEM D','OEM E','OEM F'],
+    datasets:[{label:'Units',data:[980,724,612,541,423,567],
+      backgroundColor:'rgba(6,182,212,.65)',borderRadius:4}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:C,grid:{color:gridColor}},y:{ticks:C,grid:{color:gridColor}}}
+  }
+});
+
+new Chart(document.getElementById('categoryChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Chargers','Cases','Cables','Earbuds','Screen Protectors','Other'],
+    datasets:[{data:[1240,860,720,490,320,217],
+      backgroundColor:['rgba(6,182,212,.7)','rgba(139,92,246,.7)','rgba(16,185,129,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.7)','rgba(100,116,139,.7)'],
+      borderWidth:1}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{color:'#64748b',font:{size:11}}}}}
+});
+
+const tableData = [
+  ['ACC-00412','OEM A','Chargers',24,'RTV'],
+  ['ACC-00387','OEM B','Cases',15,'Bid Sale'],
+  ['ACC-00401','OEM C','Cables',32,'RTV'],
+  ['ACC-00428','OEM A','Earbuds',8,'Bid Sale'],
+  ['ACC-00395','OEM D','Screen Protectors',18,'RTV'],
+  ['ACC-00419','OEM E','Chargers',11,'Bid Sale'],
+  ['ACC-00433','OEM B','Cables',26,'RTV'],
+  ['ACC-00408','OEM F','Cases',9,'Hold'],
+  ['ACC-00416','OEM C','Earbuds',14,'Bid Sale'],
+  ['ACC-00422','OEM A','Chargers',19,'RTV'],
+];
+const dispClass = {RTV:'pill-amber','Bid Sale':'pill-bid',Hold:'pill-amber',Scrap:'pill-rtv'};
+const tb = document.getElementById('rtv-table');
+tableData.forEach(r => {
+  tb.innerHTML += `<tr>
+    <td style="font-family:monospace">${r[0]}</td>
+    <td>${r[1]}</td>
+    <td>${r[2]}</td>
+    <td style="font-weight:600">${r[3]}</td>
+    <td><span class="pill ${dispClass[r[3]]||'pill-amber'}">${r[3]}</span></td>
+    <td style="color:var(--muted)">Jul 11</td>
+  </tr>`;
+});
+</script>
+</body>
+</html>

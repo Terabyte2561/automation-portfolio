@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossDock Automation — Brian YT SHIN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#07080f; --card:#0d0f1a;
+      --border:rgba(255,255,255,.06);
+      --accent:#06b6d4; --cyan-d:rgba(6,182,212,.12);
+      --text:#e2e8f0; --muted:#64748b;
+      --green:#22c55e; --amber:#f59e0b; --purple:#8b5cf6;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+    nav{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.9);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);padding:0 2rem;height:54px;
+      display:flex;align-items:center;justify-content:space-between}
+    .nav-back{display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:600;
+      color:var(--muted);text-decoration:none;transition:color .2s}
+    .nav-back:hover{color:var(--accent)}
+    .nav-back svg{width:15px;height:15px;stroke:currentColor}
+    .nav-title{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;color:var(--muted);opacity:.6}
+
+    /* WIP BANNER */
+    .wip-banner{background:rgba(245,158,11,.08);border-bottom:1px solid rgba(245,158,11,.2);
+      padding:.6rem 2rem;text-align:center;font-size:.78rem;color:var(--amber)}
+    .wip-banner strong{font-weight:700}
+
+    .hero{padding:5rem 2rem 3.5rem;max-width:860px;margin:0 auto;text-align:center}
+    .hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;
+      letter-spacing:.14em;text-transform:uppercase;color:var(--amber);
+      background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);
+      border-radius:20px;padding:.35rem 1rem;margin-bottom:1.5rem}
+    .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);
+      font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:1rem;
+      background:linear-gradient(135deg,#e2e8f0 30%,var(--amber));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{font-size:.95rem;color:var(--muted);line-height:1.75;max-width:600px;margin:0 auto 2.5rem}
+
+    .status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;
+      max-width:860px;margin:0 auto 4rem;padding:0 2rem}
+    .status-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;
+      display:flex;align-items:center;gap:1rem}
+    .status-icon{font-size:1.5rem;flex-shrink:0}
+    .status-body{}
+    .status-title{font-size:.8rem;font-weight:700;margin-bottom:.2rem}
+    .status-sub{font-size:.7rem;color:var(--muted)}
+    .dot-done{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+    .dot-wip{width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0}
+
+    .content{max-width:860px;margin:0 auto;padding:0 2rem 6rem}
+    .block{margin-bottom:3rem}
+    .block-label{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+      color:var(--accent);margin-bottom:.75rem}
+    .block h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;
+      margin-bottom:1rem;color:var(--text)}
+
+    /* PIPELINE FLOW */
+    .pipeline{display:flex;align-items:stretch;gap:0;margin-top:.75rem;overflow-x:auto;padding-bottom:.5rem}
+    .pipe-step{background:var(--card);border:1px solid var(--border);border-radius:12px;
+      padding:1.25rem;min-width:160px;flex:1;position:relative}
+    .pipe-step.done{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.04)}
+    .pipe-step.active{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.04)}
+    .pipe-arrow{display:flex;align-items:center;padding:0 .5rem;color:var(--muted);font-size:1.2rem;flex-shrink:0}
+    .pipe-badge{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+      padding:.15rem .5rem;border-radius:8px;margin-bottom:.6rem;display:inline-block}
+    .pipe-badge.done{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+    .pipe-badge.wip{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+    .pipe-title{font-size:.82rem;font-weight:700;margin-bottom:.35rem}
+    .pipe-desc{font-size:.72rem;color:var(--muted);line-height:1.55}
+
+    .flow{display:flex;flex-direction:column;gap:0}
+    .flow-step{display:flex;gap:1.25rem;align-items:flex-start;padding:.75rem 0;position:relative}
+    .flow-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:50px;
+      width:2px;height:calc(100% - 16px);background:var(--border)}
+    .flow-num{width:36px;height:36px;border-radius:50%;background:var(--cyan-d);
+      border:1px solid rgba(6,182,212,.3);display:flex;align-items:center;justify-content:center;
+      font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;
+      color:var(--accent);flex-shrink:0;position:relative;z-index:1}
+    .flow-num.done{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:var(--green)}
+    .flow-body{padding-top:.4rem}
+    .flow-title{font-weight:600;font-size:.88rem;margin-bottom:.2rem}
+    .flow-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
+    .flow-chip{display:inline-block;font-size:.62rem;font-weight:700;padding:.15rem .5rem;border-radius:8px;margin-top:.4rem}
+    .flow-chip.done{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+    .flow-chip.wip{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+
+    .code-block{background:#0a0b14;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:.75rem}
+    .code-header{display:flex;align-items:center;justify-content:space-between;
+      padding:.6rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
+    .code-lang{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .code-dots{display:flex;gap:.4rem}
+    .code-dots span{width:10px;height:10px;border-radius:50%}
+    pre{padding:1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.7;color:#cdd6f4}
+    .kw{color:#cba6f7} .fn{color:#89b4fa} .st{color:#a6e3a1}
+    .cm{color:#6c7086;font-style:italic} .nb{color:#fab387} .op{color:#89dceb}
+
+    .tech-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.5rem}
+    .tech-chip{font-size:.75rem;font-weight:600;padding:.4rem 1rem;border-radius:20px;
+      border:1px solid var(--border);color:var(--muted);background:var(--card)}
+    .tech-chip.hi{border-color:rgba(6,182,212,.3);color:var(--accent);background:var(--cyan-d)}
+
+    footer{text-align:center;padding:2rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="../../index.html">
+    <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+    Back to Hub
+  </a>
+  <span class="nav-title">Case Study</span>
+</nav>
+
+<div class="wip-banner">
+  <strong>Work in Progress</strong> — Core pipeline built. Final integration and testing in progress.
+</div>
+
+<div class="hero">
+  <div class="hero-tag">🚦 In Progress</div>
+  <h1>CrossDock Automation</h1>
+  <p>End-to-end CrossDock workflow automation using Google Apps Script — parsing inbound shipment emails, dispatching automated replies, and updating a real-time tracking sheet without manual intervention.</p>
+</div>
+
+<!-- STATUS GRID -->
+<div class="status-grid">
+  <div class="status-card">
+    <div class="dot-done"></div>
+    <div class="status-body">
+      <div class="status-title">Gmail Parsing</div>
+      <div class="status-sub">Inbound email extraction</div>
+    </div>
+  </div>
+  <div class="status-card">
+    <div class="dot-done"></div>
+    <div class="status-body">
+      <div class="status-title">Auto-Reply</div>
+      <div class="status-sub">Templated response dispatch</div>
+    </div>
+  </div>
+  <div class="status-card">
+    <div class="dot-done"></div>
+    <div class="status-body">
+      <div class="status-title">Sheet Update</div>
+      <div class="status-sub">Real-time status tracking</div>
+    </div>
+  </div>
+  <div class="status-card">
+    <div class="dot-wip"></div>
+    <div class="status-body">
+      <div class="status-title">Full Integration</div>
+      <div class="status-sub">End-to-end testing in progress</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- PIPELINE -->
+  <div class="block">
+    <div class="block-label">Pipeline Overview</div>
+    <h2>Automated CrossDock Flow</h2>
+    <div class="pipeline">
+      <div class="pipe-step done">
+        <div class="pipe-badge done">Done</div>
+        <div class="pipe-title">📧 Gmail Parse</div>
+        <div class="pipe-desc">Detects inbound CrossDock notifications by subject/sender pattern</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step done">
+        <div class="pipe-badge done">Done</div>
+        <div class="pipe-title">🔍 Data Extract</div>
+        <div class="pipe-desc">Pulls shipment #, carrier, ETA from email body via regex</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step done">
+        <div class="pipe-badge done">Done</div>
+        <div class="pipe-title">📬 Auto-Reply</div>
+        <div class="pipe-desc">Sends templated acknowledgment reply to sender</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step done">
+        <div class="pipe-badge done">Done</div>
+        <div class="pipe-title">📊 Sheet Update</div>
+        <div class="pipe-desc">Appends shipment record to tracking sheet with timestamp</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step active">
+        <div class="pipe-badge wip">WIP</div>
+        <div class="pipe-title">🔗 Full Integration</div>
+        <div class="pipe-desc">End-to-end testing across all edge cases</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL FLOW -->
+  <div class="block">
+    <div class="block-label">How It Works</div>
+    <h2>Step-by-Step Pipeline</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num done">✓</div>
+        <div class="flow-body">
+          <div class="flow-title">Email Trigger Detection</div>
+          <div class="flow-desc">A time-driven Apps Script trigger runs every few minutes, scanning the Gmail inbox for unread emails matching CrossDock notification patterns (subject line + sender domain).</div>
+          <span class="flow-chip done">Complete</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num done">✓</div>
+        <div class="flow-body">
+          <div class="flow-title">Shipment Data Extraction</div>
+          <div class="flow-desc">Regex patterns extract structured fields from the email body: shipment number, carrier name, estimated arrival, origin, and item count. Handles variation in email formats across carriers.</div>
+          <span class="flow-chip done">Complete</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num done">✓</div>
+        <div class="flow-body">
+          <div class="flow-title">Automated Reply Dispatch</div>
+          <div class="flow-desc">GmailApp sends a templated acknowledgment reply to the sender — confirming receipt, expected dock door assignment, and contact info — without analyst involvement.</div>
+          <span class="flow-chip done">Complete</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num done">✓</div>
+        <div class="flow-body">
+          <div class="flow-title">Google Sheets Status Update</div>
+          <div class="flow-desc">Extracted shipment data is appended as a new row in the CrossDock tracking sheet with timestamp, status "Pending Arrival", and a link back to the original email thread.</div>
+          <span class="flow-chip done">Complete</span>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">~</div>
+        <div class="flow-body">
+          <div class="flow-title">Exception Handling & Edge Cases</div>
+          <div class="flow-desc">Handling emails with missing fields, duplicate shipment IDs, and carrier format variations. Final testing across all known email templates before production deployment.</div>
+          <span class="flow-chip wip">In Progress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE SNIPPET -->
+  <div class="block">
+    <div class="block-label">Code Sample</div>
+    <h2>Gmail Parser (Apps Script)</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span style="background:#ff5f57"></span><span style="background:#ffbd2e"></span><span style="background:#28c840"></span></div>
+        <span class="code-lang">Google Apps Script · gmail_parser.gs</span>
+      </div>
+      <pre><span class="kw">function</span> <span class="fn">processCrossDockEmails</span>() {
+  <span class="kw">const</span> threads = GmailApp.<span class="fn">search</span>(
+    <span class="st">'subject:"CrossDock Shipment" is:unread'</span>
+  );
+
+  threads.<span class="fn">forEach</span>(thread <span class="op">=></span> {
+    <span class="kw">const</span> msg     = thread.<span class="fn">getMessages</span>()[<span class="nb">0</span>];
+    <span class="kw">const</span> body    = msg.<span class="fn">getPlainBody</span>();
+    <span class="kw">const</span> sender  = msg.<span class="fn">getFrom</span>();
+
+    <span class="cm">// Extract shipment fields via regex</span>
+    <span class="kw">const</span> data = {
+      shipment_id: <span class="fn">extract</span>(body, <span class="st">/Shipment[#\s:]+(\w+)/i</span>),
+      carrier:     <span class="fn">extract</span>(body, <span class="st">/Carrier[:\s]+(.+)/i</span>),
+      eta:         <span class="fn">extract</span>(body, <span class="st">/ETA[:\s]+(.+)/i</span>),
+      qty:         <span class="fn">extract</span>(body, <span class="st">/Units[:\s]+(\d+)/i</span>),
+    };
+
+    <span class="cm">// Send acknowledgment reply</span>
+    thread.<span class="fn">reply</span>(<span class="fn">buildAckTemplate</span>(data));
+
+    <span class="cm">// Log to tracking sheet</span>
+    <span class="fn">appendToSheet</span>(data, sender, <span class="kw">new</span> <span class="fn">Date</span>());
+
+    <span class="cm">// Mark as read</span>
+    thread.<span class="fn">markRead</span>();
+  });
+}</pre>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-label">Technology</div>
+    <h2>Tech Stack</h2>
+    <div class="tech-grid">
+      <span class="tech-chip hi">Google Apps Script</span>
+      <span class="tech-chip hi">GmailApp</span>
+      <span class="tech-chip hi">Google Sheets</span>
+      <span class="tech-chip">Time-driven Triggers</span>
+      <span class="tech-chip">Regex Parsing</span>
+      <span class="tech-chip">Email Automation</span>
+      <span class="tech-chip">Real-time Tracking</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="../../index.html">← Back to Portfolio Hub</a> &nbsp;·&nbsp; Brian YT SHIN
+</footer>
+</body>
+</html>
